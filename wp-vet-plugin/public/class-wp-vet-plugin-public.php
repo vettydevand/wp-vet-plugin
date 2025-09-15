@@ -29,7 +29,10 @@ class WPVetPlugin_Public {
             'wp_vet_ajax',
             array(
                 'ajax_url' => admin_url('admin-ajax.php'),
-                'nonce' => wp_create_nonce('get_appointments_nonce')
+                'nonce' => wp_create_nonce('get_appointments_nonce'),
+                'create_nonce' => wp_create_nonce('create_appointment_nonce'),
+                'update_nonce' => wp_create_nonce('update_appointment_nonce'),
+                'delete_nonce' => wp_create_nonce('delete_appointment_nonce'),
             )
         );
     }

@@ -12,6 +12,85 @@ class WPVetPlugin_Admin {
         add_action('init', array($this, 'create_appointment_post_type'));
         add_action('add_meta_boxes', array($this, 'add_appointment_meta_box'));
         add_action('save_post_appointment', array($this, 'save_meta_box_data'));
+
+        add_action('wp_ajax_create_appointment', array($this, 'create_appointment_ajax'));
+        add_action('wp_ajax_update_appointment', array($this, 'update_appointment_ajax'));
+        add_action('wp_ajax_delete_appointment', array($this, 'delete_appointment_ajax'));
+    }
+    
+    public function create_appointment_ajax() {
+        check_ajax_referer('create_appointment_nonce', 'nonce');
+
+        if (!current_user_can('edit_posts')) {
+            wp_send_json_error('Unauthorized', 403);
+        }
+
+        $title = isset($_POST['title']) ? sanitize_text_field($_POST['title']) : 'Appointment';
+        $date = isset($_POST['date']) ? sanitize_text_field($_POST['date']) : null;
+
+        if (empty($title) || empty($date)) {
+            wp_send_json_error('Title and date are required.', 400);
+        }
+
+        $post_id = wp_insert_post(array(
+            'post_title' => $title,
+            'post_type' => 'appointment',
+            'post_status' => 'publish',
+        ));
+
+        if (is_wp_error($post_id)) {
+            wp_send_json_error($post_id->get_error_message(), 500);
+        }
+
+        update_post_meta($post_id, 'appointment_date', $date);
+
+        wp_send_json_success(array('id' => $post_id));
+    }
+
+    public function update_appointment_ajax() {
+        check_ajax_referer('update_appointment_nonce', 'nonce');
+
+        if (!current_user_can('edit_posts')) {
+            wp_send_json_error('Unauthorized', 403);
+        }
+
+        $post_id = isset($_POST['id']) ? absint($_POST['id']) : 0;
+        $date = isset($_POST['date']) ? sanitize_text_field($_POST['date']) : null;
+
+        if (empty($post_id) || empty($date)) {
+            wp_send_json_error('ID and date are required.', 400);
+        }
+
+        $post = get_post($post_id);
+        if (!$post || $post->post_type !== 'appointment') {
+            wp_send_json_error('Invalid appointment ID.', 404);
+        }
+
+        update_post_meta($post_id, 'appointment_date', $date);
+
+        wp_send_json_success();
+    }
+
+    public function delete_appointment_ajax() {
+        check_ajax_referer('delete_appointment_nonce', 'nonce');
+
+        if (!current_user_can('delete_posts')) {
+            wp_send_json_error('Unauthorized', 403);
+        }
+
+        $post_id = isset($_POST['id']) ? absint($_POST['id']) : 0;
+
+        if (empty($post_id)) {
+            wp_send_json_error('ID is required.', 400);
+        }
+
+        $result = wp_delete_post($post_id, true);
+
+        if ($result === false) {
+            wp_send_json_error('Failed to delete appointment.', 500);
+        }
+
+        wp_send_json_success();
     }
 
     public function enqueue_styles() {
