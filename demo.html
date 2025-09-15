@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Live Demo - WP Vet Plugin</title>
+    <link rel="stylesheet" href="assets/lib/fullcalendar.min.css">
+    <link rel="stylesheet" href="assets/lib/toastr.min.css">
+    <link rel="stylesheet" href="assets/css/demo.css">
+</head>
+<body>
+    <div class="demo-header">
+        <h1>WP Vet Plugin - Live Demo</h1>
+        <p>Questa è una demo interattiva. Gli appuntamenti non vengono salvati e le notifiche sono simulate.</p>
+        <a href="index.html">&larr; Torna alla Home</a>
+    </div>
+
+    <div id="calendar-container">
+        <div id="calendar"></div>
+    </div>
+
+    <!-- Modale per l'inserimento/modifica degli appuntamenti -->
+    <div id="appointment-modal" class="modal">
+        <div class="modal-content">
+            <span class="close-button">&times;</span>
+            <h2 id="modal-title">Nuovo Appuntamento</h2>
+            <form id="appointment-form">
+                <input type="hidden" id="event-id">
+                <label for="owner-name">Nome Proprietario:</label>
+                <input type="text" id="owner-name" required>
+                <label for="pet-name">Nome Animale:</label>
+                <input type="text" id="pet-name" required>
+                <label for="visit-reason">Motivo Visita:</label>
+                <input type="text" id="visit-reason" required>
+                <div class="modal-buttons">
+                    <button type="submit" id="save-appointment">Salva</button>
+                    <button type="button" id="delete-appointment" class="delete-button">Elimina</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="assets/lib/fullcalendar.min.js"></script>
+    <script src="assets/lib/toastr.min.js"></script>
+    <script src="assets/js/demo.js"></script>
+</body>
+</html>
