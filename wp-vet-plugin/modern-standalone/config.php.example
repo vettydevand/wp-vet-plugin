@@ -1,0 +1,9 @@
+<?php
+// config.php.example
+
+// Per usare questo file, rinominalo in `config.php` e personalizza i valori.
+
+// Percorso del database SQLite
+// Lascia 'database.sqlite' per usare il percorso di default nella stessa directory.
+// Puoi specificare un percorso assoluto per maggiore sicurezza (es. '/var/www/data/database.sqlite').
+define('DB_PATH', 'database.sqlite');

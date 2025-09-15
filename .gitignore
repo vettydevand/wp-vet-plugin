@@ -1,11 +1,2 @@
 
-# Package manager
-node_modules
-
-# Generated
-tsconfig.json
-tsconfig.tsbuildinfo
-dist
-
-# Monorepo
-.turbo
+w-vet-plugin/modern-standalone/config.php
