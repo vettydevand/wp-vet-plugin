@@ -4,7 +4,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     if (calendarEl) {
         var calendar = new FullCalendar.Calendar(calendarEl, {
-            initialView: 'dayGridMonth',
+            initialView: window.innerWidth < 768 ? 'listWeek' : 'dayGridMonth',
             editable: true,
             selectable: true,
             droppable: true,

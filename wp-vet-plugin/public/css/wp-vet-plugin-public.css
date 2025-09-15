@@ -56,3 +56,18 @@
     margin-bottom: 5px;
     font-size: 14px;
 }
+
+/* Mobile-specific styles */
+@media (max-width: 768px) {
+    .fc-toolbar {
+        flex-direction: column;
+    }
+
+    .fc-toolbar .fc-toolbar-chunk {
+        margin-bottom: 10px;
+    }
+
+    #wp-vet-calendar-wrapper {
+        padding: 10px;
+    }
+}
