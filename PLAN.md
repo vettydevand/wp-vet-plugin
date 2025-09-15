@@ -16,42 +16,58 @@ Sulla base dell'analisi precedente, ho definito il seguente piano di lavoro, che
     *   Migliorare la leggibilità del codice che genera l'output JSON per FullCalendar.
     *   **Commit:** `refactor: Improve appointments data fetching for FullCalendar`
 
-**Fase 2: Miglioramento dell'Esperienza Utente con AJAX**
+**Fase 2: Implementazione delle Funzionalità AJAX**
 
-1.  **Implementazione Base di AJAX:**
-    *   Creare gli endpoint AJAX in WordPress per creare, modificare ed eliminare gli appuntamenti.
-    *   Aggiungere i nonce AJAX per la sicurezza.
-    *   Creare un file JavaScript per gestire le chiamate AJAX dal calendario.
-    *   Localizzare lo script per passare in modo sicuro l'URL di AJAX e i nonce.
-    *   **Commit:** `feat: Implement AJAX for appointment creation, update and deletion`
+1.  **Creazione degli Endpoint AJAX:**
+    *   Creare le azioni AJAX per creare, aggiornare ed eliminare gli appuntamenti.
+    *   Implementare la logica di gestione dei dati nel backend.
+    *   **Commit:** `feat: Add AJAX endpoints for appointment management`
 
-2.  **Migliorare l'Interfaccia del Calendario:**
-    *   Al click su un evento, aprire un modal con i dettagli dell'appuntamento e i pulsanti per modificare o eliminare.
-    *   Implementare la funzionalità di drag & drop per modificare la data e l'ora di un appuntamento.
-    *   **Commit:** `feat: Add modal for event details and drag-and-drop rescheduling`
+2.  **Integrazione AJAX nel Frontend:**
+    *   Modificare il file JavaScript per utilizzare gli endpoint AJAX invece di ricaricare la pagina.
+    *   Assicurare che il calendario si aggiorni dinamicamente dopo ogni azione.
+    *   **Commit:** `feat: Implement full AJAX functionality for calendar events`
 
-**Fase 3: Estensioni Funzionali**
+**Fase 3: Ottimizzazione dell'Esperienza Utente e Feedback Visivo**
 
-1.  **Aggiungere lo Stato dell'Appuntamento:**
-    *   Registrare una tassonomia personalizzata "Stato Appuntamento".
-    *   Aggiungere un selettore per lo stato nel metabox.
-    *   Visualizzare gli appuntamenti con colori diversi sul calendario in base allo stato.
-    *   **Commit:** `feat: Add appointment status taxonomy and color-coded events`
+1.  **Aggiungere Notifiche e Feedback Visivo.**
+    *   Sostituire gli `alert()` con notifiche più discrete (es. `toastr.js`).
+    *   Introdurre un indicatore di caricamento durante le chiamate AJAX.
+    *   **Commit:** `feat: Add visual feedback and notifications for calendar actions`
 
-2.  **Aggiungere Campi Cliente e Animale:**
-    *   Aggiungere nuovi campi al metabox per il nome del cliente, l'email, il telefono e per il nome e la specie dell'animale.
-    *   Salvare questi dati come metadati del post.
-    *   Visualizzare queste informazioni nel modal dei dettagli dell'appuntamento.
-    *   **Commit:** `feat: Add client and pet information fields to appointments`
+2.  **Migliorare l'Interfaccia Utente.**
+    *   Affinare lo stile del calendario e aggiungere una legenda.
+    *   **Commit:** `feat: Improve calendar UI and add legend`
 
-**Fase 4: Finalizzazione e Documentazione**
+**Fase 4: Miglioramento dell'Interfaccia e Ottimizzazione Mobile**
+
+1.  **Sostituire `prompt` e `confirm` con un Modal.**
+    *   Implementare un modal per la creazione, modifica ed eliminazione degli appuntamenti.
+    *   **Commit:** `feat: Implement modal for creating and editing appointments`
+
+2.  **Ottimizzazione per Dispositivi Mobili.**
+    *   Migliorare la visualizzazione del calendario su schermi di piccole dimensioni.
+    *   **Commit:** `fix: Improve calendar responsiveness for mobile devices`
+
+**Fase 5: Integrazione con Servizi Esterni (Telegram)**
+
+1.  **Pagina di Impostazioni per il Bot Telegram.**
+    *   Creare una pagina di amministrazione per inserire il token API del bot e l'ID della chat.
+    *   **Commit:** `feat: Add admin page for Telegram Bot settings`
+
+2.  **Implementazione delle Notifiche Telegram.**
+    *   Creare una funzione per inviare messaggi tramite l'API di Telegram.
+    *   Inviare una notifica per ogni creazione, modifica o eliminazione di un appuntamento.
+    *   **Commit:** `feat: Implement Telegram notifications for appointment changes`
+
+**Fase 6: Finalizzazione e Documentazione**
 
 1.  **Revisione Finale e Pulizia:**
-    *   Rivedere l'intero codebase per coerenza, leggibilità e aderenza agli standard di WordPress.
+    *   Rivedere l'intero codebase per coerenza e leggibilità.
     *   Testare a fondo tutte le funzionalità.
     *   **Commit:** `chore: Final code review and cleanup`
 
 2.  **Aggiornamento Documentazione:**
-    *   Aggiornare il file `README.md` con le istruzioni dettagliate sull'installazione, la configurazione e l'uso di tutte le nuove funzionalità.
+    *   Aggiornare il file `README.md` con le istruzioni dettagliate.
     *   Aggiungere una sezione "Changelog".
     *   **Commit:** `docs: Update README.md with complete documentation`
