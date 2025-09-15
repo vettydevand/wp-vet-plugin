@@ -1,7 +1,7 @@
 server {
     listen 80;
     server_name _;
-    root {{ project_dest }}/wp-vet-plugin/modern-standalone;
+    root {{ document_root }};
     index index.html;
 
     location / {
@@ -10,6 +10,6 @@ server {
 
     location ~ \.php$ {
         include snippets/fastcgi-php.conf;
-        fastcgi_pass unix:/var/run/php/php7.4-fpm.sock; # Adatta la versione di PHP se necessario
+        fastcgi_pass unix:/var/run/php/php-fpm.sock; # Assicurati che il percorso del socket sia corretto per la tua versione di PHP
     }
 }

@@ -3,8 +3,7 @@
   hosts: all
   become: yes
   vars:
-    project_src: "https://github.com/google-gemini/generative-ai-docs"
-    project_dest: "/var/www/wp-vet-plugin"
+    project_root: "/var/www/html/wp-vet-plugin/wp-vet-plugin/modern-standalone"
 
   tasks:
     - name: Aggiorna la cache di APT e installa i pacchetti necessari
@@ -13,21 +12,15 @@
           - nginx
           - php-fpm
           - php-sqlite3
-          - git
         state: present
         update_cache: yes
-
-    - name: Clona o aggiorna il repository del progetto
-      git:
-        repo: "{{ project_src }}"
-        dest: "{{ project_dest }}"
-        version: main
-        force: yes
 
     - name: Crea il file di configurazione per Nginx
       template:
         src: templates/nginx.conf.j2
         dest: /etc/nginx/sites-available/wp-vet-plugin
+      vars:
+        document_root: "{{ project_root }}"
 
     - name: Abilita il nuovo sito Nginx
       file:
@@ -43,7 +36,7 @@
 
     - name: Imposta i permessi corretti per la cartella del progetto
       file:
-        path: "{{ project_dest }}"
+        path: "{{ project_root }}"
         state: directory
         recurse: yes
         owner: www-data
