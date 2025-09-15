@@ -1,10 +1,11 @@
 <?php
 /**
  * Plugin Name:       WP Vet Plugin
- * Description:       A WordPress plugin for managing a veterinary practice, built on top of FullCalendar.
- * Version:           1.1.0
- * Author:            Your Name
- * Author URI:        https://your-website.com
+ * Plugin URI:        https://github.com/google-gemini/wp-vet-plugin
+ * Description:       Un plugin per WordPress per la gestione di appuntamenti veterinari, visualizzati su un calendario interattivo e con notifiche in tempo reale tramite Telegram.
+ * Version:           1.0.0
+ * Author:            Gemini
+ * Author URI:        https://gemini.google.com
  * License:           GPL-2.0-or-later
  * License URI:       https://www.gnu.org/licenses/gpl-2.0.html
  * Text Domain:       wp-vet-plugin
@@ -17,13 +18,14 @@ if (!defined('ABSPATH')) {
 }
 
 // Define plugin constants for better management.
-define('WP_VET_PLUGIN_VERSION', '1.1.0');
+define('WP_VET_PLUGIN_VERSION', '1.0.0');
 define('WP_VET_PLUGIN_FILE', __FILE__);
 define('WP_VET_PLUGIN_DIR', plugin_dir_path(WP_VET_PLUGIN_FILE));
 define('WP_VET_PLUGIN_URL', plugin_dir_url(WP_VET_PLUGIN_FILE));
 
 /**
  * The code that runs during plugin activation.
+ * This action is documented in includes/class-wp-vet-plugin-activator.php
  */
 function activate_wp_vet_plugin() {
     require_once WP_VET_PLUGIN_DIR . 'includes/class-wp-vet-plugin-activator.php';
@@ -32,6 +34,7 @@ function activate_wp_vet_plugin() {
 
 /**
  * The code that runs during plugin deactivation.
+ * This action is documented in includes/class-wp-vet-plugin-deactivator.php
  */
 function deactivate_wp_vet_plugin() {
     require_once WP_VET_PLUGIN_DIR . 'includes/class-wp-vet-plugin-deactivator.php';

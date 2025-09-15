@@ -1,12 +1,3 @@
----
-Titolo: Piano di Lavoro per WP Vet Plugin
-Stato: In Corso
----
-
-Questo documento delinea il piano di lavoro per la messa in sicurezza, l'ottimizzazione e il miglioramento del plugin "WP Vet Plugin". Sarà aggiornato costantemente per riflettere lo stato di avanzamento dei lavori.
-
----
-
 ### **FASE 1: Analisi Iniziale e Correzione Vulnerabilità Critica (Completata)**
 
 **Obiettivo:** Comprendere la struttura del codice esistente e risolvere immediatamente le vulnerabilità più evidenti.
@@ -25,23 +16,24 @@ Questo documento delinea il piano di lavoro per la messa in sicurezza, l'ottimiz
 
 ---
 
-### **FASE 3: Ottimizzazione e Refactoring (Completata)**
+### **FASE 3: Refactoring, Documentazione e Ottimizzazione (Completata)**
 
-**Obiettivo:** Migliorare la qualità, la performance e la manutenibilità del codice.
+**Obiettivo:** Migliorare la qualità, la leggibilità e la manutenibilità del codice, aggiungendo una documentazione completa.
 
-*   [x] **3.1. Adozione Struttura Standard di WordPress:** Riorganizzazione di file e classi.
-*   [x] **3.2. Implementazione di un Loader Centralizzato:** Gestione unificata di hook, filtri e shortcode.
-*   [x] **3.3. Refactoring Gestione Impostazioni:** Raggruppamento delle opzioni in un singolo array.
-*   [x] **3.4. Internazionalizzazione:** Predisposizione del plugin per la traduzione.
-*   [x] **3.5. Separazione Logica/Vista:** Spostamento dell'HTML in file `partials`.
+*   [x] **3.1. Documentazione e Refactoring Classi Core:** Revisionate e documentate le classi `WPVetPlugin`, `Loader`, `i18n`, `Activator`, `Deactivator`.
+*   [x] **3.2. Documentazione e Refactoring Area Admin:** Revisionata e documentata la classe `WPVetPlugin_Admin` e la sua vista parziale, correggendo la logica della Settings API.
+*   [x] **3.3. Documentazione e Refactoring Area Public:** Revisionata e documentata la classe `WPVetPlugin_Public` e la sua vista, aggiungendo il modale mancante e l'internazionalizzazione delle stringhe.
+*   [x] **3.4. Refactoring Completo Gestore AJAX:** Riscritta la classe `WPVetPlugin_Ajax` per includere la lettura dei dati, gestire correttamente i campi del modale, usare nonce corretti e migliorare le notifiche.
+*   [x] **3.5. Riscittura Completa JavaScript Pubblico:** Riscritto il file JS per allinearlo alla nuova logica, gestire il modale, usare i dati corretti e le stringhe localizzate.
 
 ---
 
-### **FASE 4: Documentazione e Finalizzazione (In Corso)**
+### **FASE 4: Finalizzazione e Revisione per Pubblicazione (In Corso)**
 
-**Obiettivo:** Assicurarsi che tutto il progetto sia ben documentato, coerente e pronto per la pubblicazione.
+**Obiettivo:** Assicurarsi che il progetto sia completo, ben documentato e pronto per essere pubblicato o condiviso.
 
 *   [ ] **4.1. Aggiornamento `README.md`:** Documentazione completa di setup, uso e funzionalità.
 *   [ ] **4.2. Revisione `CONTRIBUTING.md`:** Linee guida per i contributori.
-*   [ ] **4.3. Verifica Documentazione Inline:** Controllo dei commenti nel codice.
-*   [ ] **4.4. Commit Regolari:** Mantenimento di una cronologia di commit pulita e significativa.
+*   [ ] **4.3. Verifica Documentazione Inline:** Controllo finale dei commenti nel codice.
+*   [x] **4.4. Commit Regolari:** Mantenimento di una cronologia di commit pulita e significativa. (In corso)
+*   [ ] **4.5. Commit Finale:** Un commit che segna il completamento del progetto.
