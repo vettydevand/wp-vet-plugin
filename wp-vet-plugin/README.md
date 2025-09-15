@@ -87,6 +87,7 @@ Per semplificare e standardizzare il deployment della versione **standalone**, a
 
 Visita la cartella [`iac/`](./iac) per accedere alle guide e agli esempi per i seguenti strumenti:
 
+- **[Containerizzazione (Docker/Podman)](./iac/containerization):** Il modo più semplice e veloce per eseguire l'applicazione in un ambiente isolato e coerente. Altamente raccomandato per lo sviluppo e la produzione.
 - **[cloud-init](./iac/cloud-init):** Ideale per la configurazione iniziale automatica di una macchina virtuale al suo primo avvio. Perfetto per provider cloud come AWS, Google Cloud, DigitalOcean, etc.
 - **[Ansible](./iac/ansible):** Uno strumento potente per la gestione della configurazione. Puoi usarlo per configurare un server esistente o per orchestrare deployment complessi.
 - **[OpenTofu (Terraform)](./iac/opentofu):** Permette di definire e creare l'intera infrastruttura cloud (VM, reti, firewall) come codice, integrandosi perfettamente con `cloud-init` per un setup completo.
