@@ -10,38 +10,57 @@ class WPVetPlugin_Admin {
         $this->version = $version;
 
         add_action('init', array($this, 'create_appointment_post_type'));
-        add_action('admin_menu', array($this, 'add_admin_menu'));
+        add_action('add_meta_boxes', array($this, 'add_appointment_meta_box'));
+        add_action('save_post', array($this, 'save_appointment_date'));
     }
 
     public function enqueue_styles() {
         wp_enqueue_style($this->plugin_name, WP_VET_PLUGIN_URL . 'admin/css/wp-vet-plugin-admin.css', array(), $this->version, 'all');
-        wp_enqueue_style('fullcalendar', WP_VET_PLUGIN_URL . 'assets/css/fullcalendar.min.css', array(), '6.1.11', 'all');
     }
 
     public function enqueue_scripts() {
-        wp_enqueue_script($this->plugin_name, WP_VET_PLUGIN_URL . 'admin/js/wp-vet-plugin-admin.js', array('jquery'), $this->version, false);
-        wp_enqueue_script('fullcalendar', WP_VET_PLUGIN_URL . 'assets/js/fullcalendar.min.js', array('jquery'), '6.1.11', true);
+        wp_enqueue_script($this->plugin_name, WP_VET_PLUGIN_URL . 'admin/js/wp-vet-plugin-admin.js', array('jquery', 'jquery-ui-datepicker'), $this->version, false);
+        wp_enqueue_style('jquery-ui-datepicker-style', '//ajax.googleapis.com/ajax/libs/jqueryui/1.10.4/themes/smoothness/jquery-ui.css');
     }
 
-    public function add_admin_menu() {
-        add_menu_page(
-            'Vet Appointments',
-            'Vet Appointments',
-            'manage_options',
-            $this->plugin_name,
-            array($this, 'display_calendar_page'),
-            'dashicons-calendar',
-            6
+    public function add_appointment_meta_box() {
+        add_meta_box(
+            'appointment_date_meta_box',
+            __('Appointment Details', 'wp-vet-plugin'),
+            array($this, 'render_appointment_meta_box'),
+            'appointment',
+            'side',
+            'core'
         );
     }
 
-    public function display_calendar_page() {
+    public function render_appointment_meta_box($post) {
+        wp_nonce_field('save_appointment_date', 'appointment_date_nonce');
+        $appointment_date = get_post_meta($post->ID, 'appointment_date', true);
         ?>
-        <div class="wrap">
-            <h2><?php echo esc_html(get_admin_page_title()); ?></h2>
-            <div id="calendar"></div>
-        </div>
+        <p>
+            <label for="appointment_date"><?php _e('Appointment Date:', 'wp-vet-plugin'); ?></label>
+            <input type="date" id="appointment_date" name="appointment_date" value="<?php echo esc_attr($appointment_date); ?>" />
+        </p>
         <?php
+    }
+
+    public function save_appointment_date($post_id) {
+        if (!isset($_POST['appointment_date_nonce']) || !wp_verify_nonce($_POST['appointment_date_nonce'], 'save_appointment_date')) {
+            return;
+        }
+
+        if (defined('DOING_AUTOSAVE') && DOING_AUTOSAVE) {
+            return;
+        }
+
+        if (!current_user_can('edit_post', $post_id)) {
+            return;
+        }
+
+        if (isset($_POST['appointment_date'])) {
+            update_post_meta($post_id, 'appointment_date', sanitize_text_field($_POST['appointment_date']));
+        }
     }
 
     public function create_appointment_post_type() {
@@ -62,10 +81,10 @@ class WPVetPlugin_Admin {
         );
 
         $args = array(
-            'label' => __('appointment', 'wp-vet-plugin'),
+            'label' => __('Appointment', 'wp-vet-plugin'),
             'description' => __('Appointments for the veterinary clinic', 'wp-vet-plugin'),
             'labels' => $labels,
-            'supports' => array('title', 'editor', 'custom-fields'),
+            'supports' => array('title', 'editor'),
             'hierarchical' => false,
             'public' => true,
             'show_ui' => true,
