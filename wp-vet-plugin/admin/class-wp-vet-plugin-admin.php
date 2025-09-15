@@ -11,7 +11,7 @@ class WPVetPlugin_Admin {
 
         add_action('init', array($this, 'create_appointment_post_type'));
         add_action('add_meta_boxes', array($this, 'add_appointment_meta_box'));
-        add_action('save_post', array($this, 'save_appointment_date'));
+        add_action('save_post_appointment', array($this, 'save_meta_box_data'));
     }
 
     public function enqueue_styles() {
@@ -25,7 +25,7 @@ class WPVetPlugin_Admin {
 
     public function add_appointment_meta_box() {
         add_meta_box(
-            'appointment_date_meta_box',
+            'appointment_details_meta_box',
             __('Appointment Details', 'wp-vet-plugin'),
             array($this, 'render_appointment_meta_box'),
             'appointment',
@@ -35,7 +35,7 @@ class WPVetPlugin_Admin {
     }
 
     public function render_appointment_meta_box($post) {
-        wp_nonce_field('save_appointment_date', 'appointment_date_nonce');
+        wp_nonce_field('save_appointment_meta_box_data', 'appointment_meta_box_nonce');
         $appointment_date = get_post_meta($post->ID, 'appointment_date', true);
         ?>
         <p>
@@ -45,8 +45,8 @@ class WPVetPlugin_Admin {
         <?php
     }
 
-    public function save_appointment_date($post_id) {
-        if (!isset($_POST['appointment_date_nonce']) || !wp_verify_nonce($_POST['appointment_date_nonce'], 'save_appointment_date')) {
+    public function save_meta_box_data($post_id) {
+        if (!isset($_POST['appointment_meta_box_nonce']) || !wp_verify_nonce($_POST['appointment_meta_box_nonce'], 'save_appointment_meta_box_data')) {
             return;
         }
 
@@ -59,7 +59,12 @@ class WPVetPlugin_Admin {
         }
 
         if (isset($_POST['appointment_date'])) {
-            update_post_meta($post_id, 'appointment_date', sanitize_text_field($_POST['appointment_date']));
+            $sanitized_date = sanitize_text_field($_POST['appointment_date']);
+            $date_format = 'Y-m-d';
+            $d = DateTime::createFromFormat($date_format, $sanitized_date);
+            if ($d && $d->format($date_format) === $sanitized_date) {
+                update_post_meta($post_id, 'appointment_date', $sanitized_date);
+            }
         }
     }
 
