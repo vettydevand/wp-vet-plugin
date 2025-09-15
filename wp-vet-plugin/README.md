@@ -23,7 +23,7 @@ Once the plugin is activated, a new custom post type called "Appointments" will 
 
 To display the calendar, you can use the `[wp_vet_calendar]` shortcode on any page or post.
 
-## Standalone Mode
+## WP-Standalone Mode
 
 This plugin can be run with a minimal WordPress installation, without needing a full-fledged website. This is useful if you only want to use the appointment calendar functionality.
 
@@ -33,7 +33,7 @@ This plugin can be run with a minimal WordPress installation, without needing a 
 2.  **Install and Activate Plugin:** Install and activate the WP Vet Plugin as described in the **Installation** section.
 3.  **Access the Calendar:** You can now access the calendar directly in your browser by navigating to the following URL:
 
-    `https://your-wordpress-site.com/wp-content/plugins/wp-vet-plugin/standalone/standalone-display.php`
+    `https://your-wordpress-site.com/wp-content/plugins/wp-vet-plugin/wp-standalone/standalone-display.php`
 
     Replace `https://your-wordpress-site.com` with the actual URL of your WordPress installation.
 
