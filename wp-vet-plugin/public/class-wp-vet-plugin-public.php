@@ -94,6 +94,19 @@ class WPVetPlugin_Public {
     }
 
     public function display_calendar() {
-        return '<div id="wp-vet-calendar-wrapper"><div id="calendar-loader" class="loader"></div><div id="calendar"></div></div>';
+        $calendar_html = '<div id="wp-vet-calendar-wrapper">';
+        $calendar_html .= '<div id="calendar-loader" class="loader"></div>';
+        $calendar_html .= '<div id="calendar"></div>';
+        $calendar_html .= '<div id="calendar-legend">';
+        $calendar_html .= '<h4>Calendar Legend</h4>';
+        $calendar_html .= '<ul>';
+        $calendar_html .= '<li><strong>Click on a day:</strong> Add a new appointment.</li>';
+        $calendar_html .= '<li><strong>Drag an appointment:</strong> Change the date.</li>';
+        $calendar_html .= '<li><strong>Click on an appointment:</strong> Delete it.</li>';
+        $calendar_html .= '</ul>';
+        $calendar_html .= '</div>';
+        $calendar_html .= '</div>';
+
+        return $calendar_html;
     }
 }
