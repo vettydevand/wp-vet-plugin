@@ -1,5 +1,12 @@
 ### Piano di Lavoro Dettagliato
 
+
+
+controlla TUTTO il codice SUDDIVIDENDO IL LAVORO PASSO PASSO, procedi per "scansioni" via via più dettagliate...., adegua, ottimizza, aggiorna, rendi coerente, eventualmente correggi... aggiungi eventuali funzionalità che ritiei necessarie o comunque un MUSTHAVE.
+
+ricorda di documentare tutto, usare sempre il piano d'azione (PLAN.md) in modo continuativo e fare commit regolari!
+
+
 Sulla base dell'analisi precedente, ho definito il seguente piano di lavoro, che seguirò passo passo, effettuando un commit Git dopo ogni passaggio significativo.
 
 **Fase 1: Sicurezza e Refactoring del Codice** (Simulata)
