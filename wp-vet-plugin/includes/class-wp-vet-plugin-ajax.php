@@ -40,16 +40,21 @@ class WPVetPlugin_Ajax {
     public function update_appointment_ajax() {
         check_ajax_referer('update_appointment_nonce', 'nonce');
 
-        if (!current_user_can('edit_posts')) {
-            wp_send_json_error('You do not have permission to update appointments.');
+        $id = isset($_POST['id']) ? intval($_POST['id']) : 0;
+
+        if (empty($id)) {
+            wp_send_json_error('Appointment ID is required.');
         }
 
-        $id = isset($_POST['id']) ? intval($_POST['id']) : 0;
+        if (!current_user_can('edit_post', $id)) {
+            wp_send_json_error('You do not have permission to update this appointment.');
+        }
+
         $title = isset($_POST['title']) ? sanitize_text_field($_POST['title']) : '';
         $date = isset($_POST['date']) ? sanitize_text_field($_POST['date']) : '';
 
-        if (empty($id) || empty($title) || empty($date)) {
-            wp_send_json_error('ID, title and date are required.');
+        if (empty($title) || empty($date)) {
+            wp_send_json_error('Title and date are required.');
         }
         
         $original_post = get_post($id);
@@ -79,14 +84,14 @@ class WPVetPlugin_Ajax {
     public function delete_appointment_ajax() {
         check_ajax_referer('delete_appointment_nonce', 'nonce');
 
-        if (!current_user_can('delete_posts')) {
-            wp_send_json_error('You do not have permission to delete appointments.');
-        }
-
         $id = isset($_POST['id']) ? intval($_POST['id']) : 0;
 
         if (empty($id)) {
             wp_send_json_error('Appointment ID is required.');
+        }
+
+        if (!current_user_can('delete_post', $id)) {
+            wp_send_json_error('You do not have permission to delete this appointment.');
         }
         
         $post = get_post($id);

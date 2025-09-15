@@ -1,125 +1,129 @@
 <?php
 
+/**
+ * The admin-specific functionality of the plugin.
+ *
+ * Defines the plugin name, version, and hooks for the admin area.
+ */
 class WPVetPlugin_Admin {
 
     private $plugin_name;
     private $version;
 
+    /**
+     * Initialize the class and set its properties.
+     */
     public function __construct($plugin_name, $version) {
         $this->plugin_name = $plugin_name;
         $this->version = $version;
-
-        add_action('add_meta_boxes', array($this, 'add_appointment_metabox'));
-        add_action('save_post_appointment', array($this, 'save_appointment_metabox_data'));
-
-        add_action('admin_menu', array($this, 'add_admin_menu'));
-        add_action('admin_init', array($this, 'register_settings'));
     }
 
-    public function add_admin_menu() {
+    /**
+     * Register the stylesheets for the admin area.
+     */
+    public function enqueue_styles() {
+        // Admin-specific stylesheets would be enqueued here.
+    }
+
+    /**
+     * Register the JavaScript for the admin area.
+     */
+    public function enqueue_scripts() {
+        // Admin-specific JavaScript files would be enqueued here.
+    }
+
+    /**
+     * Add the options page to the admin menu.
+     */
+    public function add_options_page() {
         add_options_page(
-            'WP Vet Plugin Settings',
-            'WP Vet Plugin',
+            __('WP Vet Plugin Settings', 'wp-vet-plugin'),
+            __('WP Vet Plugin', 'wp-vet-plugin'),
             'manage_options',
-            'wp-vet-plugin-settings',
+            'wp-vet-plugin',
             array($this, 'display_settings_page')
         );
     }
 
+    /**
+     * Render the settings page display.
+     */
     public function display_settings_page() {
-        require_once plugin_dir_path(dirname(__FILE__)) . 'admin/partials/wp-vet-plugin-admin-display.php';
+        require_once WP_VET_PLUGIN_DIR . 'admin/partials/wp-vet-plugin-admin-display.php';
     }
 
+    /**
+     * Register the plugin settings.
+     */
     public function register_settings() {
-        register_setting('wp_vet_plugin_settings', 'wp_vet_telegram_token', 'sanitize_text_field');
-        register_setting('wp_vet_plugin_settings', 'wp_vet_telegram_chat_id', 'sanitize_text_field');
+        register_setting(
+            'wp_vet_plugin_options', // Option group
+            'wp_vet_plugin_options', // Option name
+            array($this, 'sanitize_options') // Sanitize callback
+        );
 
         add_settings_section(
             'wp_vet_plugin_telegram_section',
-            'Telegram Bot Settings',
+            __('Telegram Bot Settings', 'wp-vet-plugin'),
             null,
-            'wp_vet_plugin_settings'
+            'wp_vet_plugin_options' // Page
         );
 
         add_settings_field(
-            'wp_vet_telegram_token',
-            'Telegram Bot Token',
+            'telegram_bot_token',
+            __('Telegram Bot Token', 'wp-vet-plugin'),
             array($this, 'render_telegram_token_field'),
-            'wp_vet_plugin_settings',
-            'wp_vet_plugin_telegram_section'
+            'wp_vet_plugin_options', // Page
+            'wp_vet_plugin_telegram_section' // Section
         );
 
         add_settings_field(
-            'wp_vet_telegram_chat_id',
-            'Telegram Chat ID',
+            'telegram_chat_id',
+            __('Telegram Chat ID', 'wp-vet-plugin'),
             array($this, 'render_telegram_chat_id_field'),
-            'wp_vet_plugin_settings',
-            'wp_vet_plugin_telegram_section'
+            'wp_vet_plugin_options', // Page
+            'wp_vet_plugin_telegram_section' // Section
         );
     }
 
+    /**
+     * Sanitize each setting field as needed.
+     *
+     * @param array $input Contains all settings fields as array keys
+     * @return array
+     */
+    public function sanitize_options($input) {
+        $new_input = array();
+        if (isset($input['telegram_bot_token'])) {
+            $new_input['telegram_bot_token'] = sanitize_text_field($input['telegram_bot_token']);
+        }
+        if (isset($input['telegram_chat_id'])) {
+            $new_input['telegram_chat_id'] = sanitize_text_field($input['telegram_chat_id']);
+        }
+        return $new_input;
+    }
+
+    /**
+     * Render the Telegram Bot Token field.
+     */
     public function render_telegram_token_field() {
-        $token = get_option('wp_vet_telegram_token');
-        echo '<input type="text" name="wp_vet_telegram_token" value="' . esc_attr($token) . '" />';
-    }
-
-    public function render_telegram_chat_id_field() {
-        $chat_id = get_option('wp_vet_telegram_chat_id');
-        echo '<input type="text" name="wp_vet_telegram_chat_id" value="' . esc_attr($chat_id) . '" />';
-    }
-
-    public function add_appointment_metabox() {
-        add_meta_box(
-            'appointment_details',
-            'Appointment Details',
-            array($this, 'render_appointment_metabox'),
-            'appointment',
-            'normal',
-            'high'
+        $options = get_option('wp_vet_plugin_options');
+        $token = isset($options['telegram_bot_token']) ? $options['telegram_bot_token'] : '';
+        printf(
+            '<input type="text" name="wp_vet_plugin_options[telegram_bot_token]" value="%s" class="regular-text" />',
+            esc_attr($token)
         );
     }
 
-    public function render_appointment_metabox($post) {
-        wp_nonce_field('save_appointment_metabox_data', 'appointment_metabox_nonce');
-
-        $appointment_date = get_post_meta($post->ID, 'appointment_date', true);
-        if (empty($appointment_date)) {
-            $appointment_date = date('Y-m-d');
-        }
-
-        echo '<label for="appointment_date">Appointment Date:</label>';
-        echo '<input type="date" id="appointment_date" name="appointment_date" value="' . esc_attr($appointment_date) . '" />';
-    }
-
-    public function save_appointment_metabox_data($post_id) {
-        if (!isset($_POST['appointment_metabox_nonce'])) {
-            return;
-        }
-
-        if (!wp_verify_nonce($_POST['appointment_metabox_nonce'], 'save_appointment_metabox_data')) {
-            return;
-        }
-
-        if (defined('DOING_AUTOSAVE') && DOING_AUTOSAVE) {
-            return;
-        }
-
-        if (!current_user_can('edit_post', $post_id)) {
-            return;
-        }
-
-        if (isset($_POST['appointment_date'])) {
-            $sanitized_date = sanitize_text_field($_POST['appointment_date']);
-            update_post_meta($post_id, 'appointment_date', $sanitized_date);
-        }
-
-        if (isset($_POST['post_title'])) {
-            $sanitized_title = sanitize_text_field($_POST['post_title']);
-            $post_data = array(
-                'ID' => $post_id,
-                'post_title' => $sanitized_title,
-            );
-            wp_update_post($post_data);
-        }
+    /**
+     * Render the Telegram Chat ID field.
+     */
+    public function render_telegram_chat_id_field() {
+        $options = get_option('wp_vet_plugin_options');
+        $chat_id = isset($options['telegram_chat_id']) ? $options['telegram_chat_id'] : '';
+        printf(
+            '<input type="text" name="wp_vet_plugin_options[telegram_chat_id]" value="%s" class="regular-text" />',
+            esc_attr($chat_id)
+        );
     }
 }

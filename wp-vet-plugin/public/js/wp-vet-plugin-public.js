@@ -1,93 +1,123 @@
 document.addEventListener('DOMContentLoaded', function() {
-    var calendarEl = document.getElementById('calendar');
-    var loader = document.getElementById('calendar-loader');
 
-    if (calendarEl) {
-        var calendar = new FullCalendar.Calendar(calendarEl, {
-            initialView: window.innerWidth < 768 ? 'listWeek' : 'dayGridMonth',
-            editable: true,
-            selectable: true,
-            droppable: true,
-            loading: function(isLoading) {
-                if (isLoading) {
-                    loader.style.display = 'block';
-                } else {
-                    loader.style.display = 'none';
-                }
-            },
-            events: function(fetchInfo, successCallback, failureCallback) {
-                fetchAppointments(fetchInfo, successCallback, failureCallback);
-            },
-            dateClick: function(info) {
-                openAppointmentModal(info, calendar);
-            },
-            eventClick: function(info) {
-                openAppointmentModal(info, calendar);
-            },
-            eventDrop: function(info) {
-                handleEventDrop(info, calendar);
-            }
-        });
-        calendar.render();
+    // region: --- Utilities ---
+    function escapeHTML(unsafe) {
+        if (typeof unsafe !== 'string') return '';
+        return unsafe.replace(/[&<>"'/]/g, match => ({
+            '&': '&amp;',
+            '<': '&lt;',
+            '>': '&gt;',
+            '"': '&quot;',
+            "'": '&#039;',
+            '/': '&#x2F;'
+        }[match]));
     }
+    // endregion: --- Utilities ---
 
-    function fetchAppointments(fetchInfo, successCallback, failureCallback) {
-        jQuery.ajax({
-            url: wp_vet_ajax.ajax_url,
-            type: 'POST',
-            data: {
-                action: 'get_appointments',
+
+    // region: --- API Service ---
+    const api = {
+        _ajax: function(action, data, successCallback, errorCallback) {
+            jQuery.ajax({
+                url: wp_vet_ajax.ajax_url,
+                type: 'POST',
+                data: { action, ...data },
+                success: function(response) {
+                    if (response.success) {
+                        successCallback(response.data);
+                    } else {
+                        errorCallback(response.data);
+                    }
+                },
+                error: function() {
+                    errorCallback('AJAX call failed.');
+                }
+            });
+        },
+
+        getAppointments: function(fetchInfo, successCallback, failureCallback) {
+            this._ajax('get_appointments', {
                 nonce: wp_vet_ajax.nonce,
                 start: fetchInfo.startStr,
                 end: fetchInfo.endStr
-            },
-            success: function(response) {
-                if (response.success) {
-                    successCallback(response.data);
-                } else {
-                    toastr.error('Failed to fetch appointments');
-                    failureCallback(new Error('Failed to fetch appointments'));
-                }
-            },
-            error: function() {
-                toastr.error('AJAX error while fetching appointments.');
-                failureCallback(new Error('AJAX error'));
-            }
-        });
-    }
+            }, successCallback, errorMsg => {
+                toastr.error('Failed to fetch appointments.');
+                failureCallback(new Error(errorMsg));
+            });
+        },
 
+        createAppointment: function(title, date, calendar, successCallback) {
+            this._ajax('create_appointment', {
+                nonce: wp_vet_ajax.create_nonce,
+                title: title,
+                date: date
+            }, data => {
+                toastr.success('Appointment created successfully.');
+                calendar.refetchEvents();
+                if (successCallback) successCallback(data);
+            }, errorMsg => toastr.error('Failed to create appointment: ' + escapeHTML(errorMsg)));
+        },
+
+        updateAppointment: function(id, title, newDate, calendar, successCallback) {
+            this._ajax('update_appointment', {
+                nonce: wp_vet_ajax.update_nonce,
+                id: id,
+                title: title,
+                date: newDate
+            }, data => {
+                toastr.success('Appointment updated successfully.');
+                calendar.refetchEvents();
+                if (successCallback) successCallback(data);
+            }, errorMsg => toastr.error('Failed to update appointment: ' + escapeHTML(errorMsg)));
+        },
+
+        deleteAppointment: function(id, calendar, successCallback) {
+            this._ajax('delete_appointment', {
+                nonce: wp_vet_ajax.delete_nonce,
+                id: id
+            }, data => {
+                toastr.success('Appointment deleted successfully.');
+                calendar.refetchEvents();
+                if (successCallback) successCallback(data);
+            }, errorMsg => toastr.error('Failed to delete appointment: ' + escapeHTML(errorMsg)));
+        }
+    };
+    // endregion: --- API Service ---
+
+
+    // region: --- Modal Management ---
     function openAppointmentModal(info, calendar) {
         const isNew = !info.event;
         const title = isNew ? '' : info.event.title;
         const id = isNew ? null : info.event.id;
 
-        const modalContent = '
-            <h3>' + (isNew ? 'New Appointment' : 'Edit Appointment') + '</h3>
-            <input type="text" id="appointment_title" placeholder="Appointment Title" value="' + title + '" required>
+        const modalContent = `
+            <h3>${isNew ? 'New Appointment' : 'Edit Appointment'}</h3>
+            <input type="text" id="appointment_title" placeholder="Appointment Title" value="${escapeHTML(title)}" required>
             <button id="save_appointment">Save</button>
-            ' + (!isNew ? '<button id="delete_appointment">Delete</button>' : '');
+            ${!isNew ? '<button id="delete_appointment">Delete</button>' : ''}
+        `;
 
         createModal(modalContent);
 
-        document.getElementById('save_appointment').onclick = function() {
+        document.getElementById('save_appointment').onclick = () => {
             const newTitle = document.getElementById('appointment_title').value;
-            if (newTitle) {
-                if (isNew) {
-                    createAppointment(newTitle, info.dateStr, calendar);
-                } else {
-                    updateAppointment(id, newTitle, info.event.startStr, calendar);
-                }
-                closeModal();
-            } else {
+            if (!newTitle) {
                 toastr.error('Title is required');
+                return;
+            }
+            
+            if (isNew) {
+                api.createAppointment(newTitle, info.dateStr, calendar, closeModal);
+            } else {
+                api.updateAppointment(id, newTitle, info.event.startStr, calendar, closeModal);
             }
         };
 
         if (!isNew) {
-            document.getElementById('delete_appointment').onclick = function() {
+            document.getElementById('delete_appointment').onclick = () => {
                 if (confirm('Are you sure you want to delete this appointment?')) {
-                    deleteAppointment(id, calendar);
-                    closeModal();
+                    api.deleteAppointment(id, calendar, closeModal);
                 }
             };
         }
@@ -100,82 +130,38 @@ document.addEventListener('DOMContentLoaded', function() {
             document.body.removeChild(modal);
         }
     }
+    // endregion: --- Modal Management ---
 
 
+    // region: --- Calendar Event Handlers ---
     function handleEventDrop(info, calendar) {
-        var newDate = info.event.startStr;
-        updateAppointment(info.event.id, info.event.title, newDate, calendar);
+        api.updateAppointment(info.event.id, info.event.title, info.event.startStr, calendar);
     }
+    // endregion: --- Calendar Event Handlers ---
 
-    function createAppointment(title, date, calendar) {
-        jQuery.ajax({
-            url: wp_vet_ajax.ajax_url,
-            type: 'POST',
-            data: {
-                action: 'create_appointment',
-                nonce: wp_vet_ajax.create_nonce,
-                title: title,
-                date: date
-            },
-            success: function(response) {
-                if (response.success) {
-                    toastr.success('Appointment created successfully.');
-                    calendar.refetchEvents();
-                } else {
-                    toastr.error('Failed to create appointment: ' + response.data);
-                }
-            },
-            error: function() {
-                toastr.error('AJAX error while creating appointment.');
-            }
-        });
-    }
 
-    function updateAppointment(id, title, newDate, calendar) {
-        jQuery.ajax({
-            url: wp_vet_ajax.ajax_url,
-            type: 'POST',
-            data: {
-                action: 'update_appointment',
-                nonce: wp_vet_ajax.update_nonce,
-                id: id,
-                title: title,
-                date: newDate
-            },
-            success: function(response) {
-                if (response.success) {
-                    toastr.success('Appointment updated successfully.');
-                    calendar.refetchEvents();
-                } else {
-                    toastr.error('Failed to update appointment: ' + response.data);
-                }
-            },
-            error: function() {
-                toastr.error('AJAX error while updating appointment.');
-            }
-        });
-    }
+    // region: --- Calendar Initialization ---
+    const calendarEl = document.getElementById('calendar');
+    const loader = document.getElementById('calendar-loader');
 
-    function deleteAppointment(id, calendar) {
-        jQuery.ajax({
-            url: wp_vet_ajax.ajax_url,
-            type: 'POST',
-            data: {
-                action: 'delete_appointment',
-                nonce: wp_vet_ajax.delete_nonce,
-                id: id
+    if (calendarEl) {
+        const calendar = new FullCalendar.Calendar(calendarEl, {
+            initialView: window.innerWidth < 768 ? 'listWeek' : 'dayGridMonth',
+            editable: true,
+            selectable: true,
+            droppable: true,
+            loading: isLoading => {
+                loader.style.display = isLoading ? 'block' : 'none';
             },
-            success: function(response) {
-                if (response.success) {
-                    toastr.success('Appointment deleted successfully.');
-                    calendar.refetchEvents();
-                } else {
-                    toastr.error('Failed to delete appointment: ' + response.data);
-                }
+            events: (fetchInfo, successCallback, failureCallback) => {
+                api.getAppointments(fetchInfo, successCallback, failureCallback);
             },
-            error: function() {
-                toastr.error('AJAX error while deleting appointment.');
-            }
+            dateClick: info => openAppointmentModal(info, calendar),
+            eventClick: info => openAppointmentModal(info, calendar),
+            eventDrop: info => handleEventDrop(info, calendar)
         });
+        calendar.render();
     }
+    // endregion: --- Calendar Initialization ---
+
 });
