@@ -1,47 +1,35 @@
 {
-  "private": true,
-  "name": "@fullcalendar-monorepos/standard",
-  "description": "Full-sized drag & drop event calendar in JavaScript",
-  "version": "6.1.19",
-  "keywords": [
-    "calendar",
-    "event",
-    "full-sized",
-    "fullcalendar"
-  ],
-  "homepage": "https://fullcalendar.io",
-  "bugs": "https://fullcalendar.io/reporting-bugs",
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/fullcalendar/fullcalendar.git"
-  },
-  "license": "MIT",
-  "author": {
-    "name": "Adam Shaw",
-    "email": "arshaw@arshaw.com",
-    "url": "http://arshaw.com/"
-  },
-  "copyright": "2024 Adam Shaw",
-  "devDependencies": {
-    "@fullcalendar-scripts/standard": "*"
-  },
-  "type": "module",
+  "name": "wp-vet-plugin",
+  "version": "1.0.0",
+  "description": "A WordPress plugin that provides a veterinary appointment calendar.",
+  "main": "dist/bundle.js",
   "scripts": {
-    "postinstall": "standard-scripts postinstall",
-    "lint": "standard-scripts lint",
-    "build": "standard-scripts build",
-    "dev": "standard-scripts dev",
-    "test": "standard-scripts test",
-    "test:dev": "standard-scripts test --dev",
-    "clean": "standard-scripts clean",
-    "ci": "pnpm run lint && pnpm run build && pnpm run test"
+    "build": "webpack",
+    "dev": "webpack --watch",
+    "test": "echo \"Error: no test specified\" && exit 0"
   },
-  "engines": {
-    "pnpm": ">=9.5.0"
+  "keywords": [
+    "wordpress",
+    "plugin",
+    "calendar",
+    "veterinary"
+  ],
+  "author": "Your Name",
+  "license": "GPL-2.0-or-later",
+  "dependencies": {
+    "@fullcalendar/core": "^6.1.19",
+    "@fullcalendar/daygrid": "^6.1.19",
+    "@fullcalendar/interaction": "^6.1.19",
+    "@fullcalendar/list": "^6.1.19",
+    "@fullcalendar/timegrid": "^6.1.19"
   },
-  "pnpm": {
-    "patchedDependencies": {
-      "jasmine-jquery@2.1.1": "scripts/patches/jasmine-jquery@2.1.1.patch"
-    }
+  "devDependencies": {
+    "@babel/core": "^7.28.4",
+    "@babel/preset-env": "^7.28.3",
+    "babel-loader": "^10.0.0",
+    "css-loader": "^7.1.2",
+    "style-loader": "^4.0.0",
+    "webpack": "^5.101.3",
+    "webpack-cli": "^6.0.1"
   }
 }

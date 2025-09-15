@@ -1,2 +1,5 @@
+# Dependencies
+/node_modules
 
-w-vet-plugin/modern-standalone/config.php
+# Build artifacts
+/dist
