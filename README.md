@@ -1,48 +1,47 @@
 # WP Vet Plugin
 
 **Contributors:** Gemini
-**Tags:** calendar, appointments, events, telegram, fullcalendar
+**Tags:** calendar, appointments, events, telegram, fullcalendar, veterinarian
 **Requires at least:** 5.0
 **Tested up to:** 6.5
 **Stable tag:** 1.0.0
 **License:** GPLv2 or later
 **License URI:** https://www.gnu.org/licenses/gpl-2.0.html
 
-Un plugin per WordPress per la gestione di appuntamenti veterinari, visualizzati su un calendario interattivo e con notifiche in tempo reale tramite Telegram.
+Un plugin WordPress sicuro e moderno per la gestione di appuntamenti veterinari, con un calendario interattivo e notifiche in tempo reale tramite Telegram.
 
 ---
 
 ## Descrizione
 
-**WP Vet Plugin** fornisce una soluzione completa e sicura per la gestione degli appuntamenti. Creato pensando agli standard moderni di WordPress, questo plugin permette di creare, modificare e cancellare appuntamenti direttamente da un calendario interattivo sul front-end del tuo sito.
+**WP Vet Plugin** fornisce una soluzione completa per la gestione degli appuntamenti. Sviluppato seguendo le best practice di WordPress, permette di creare, modificare e cancellare appuntamenti direttamente da un calendario interattivo sul front-end del tuo sito. Ogni modifica viene notificata in tempo reale su un canale Telegram a scelta, mantenendo lo staff sempre aggiornato.
 
-Ogni modifica (creazione, aggiornamento, cancellazione) viene notificata in tempo reale su un canale Telegram a scelta, garantendo che lo staff sia sempre informato.
-
-Il plugin è stato sviluppato con un'attenzione particolare alla **sicurezza**, all'**efficienza** e alla **facilità d'uso**, seguendo le best practice di sviluppo per WordPress.
+L'interfaccia è pensata per essere intuitiva: un clic su un giorno per creare un nuovo appuntamento, un clic su un evento per modificarlo, e il drag-and-drop per riprogrammarlo. La sicurezza è garantita da nonce, sanitizzazione dei dati e controllo dei permessi utente.
 
 ---
 
 ## Funzionalità Principali
 
-*   **Calendario Interattivo:** Basato sulla potente libreria [FullCalendar](https://fullcalendar.io/), permette di visualizzare e gestire gli appuntamenti con un'interfaccia drag-and-drop.
+*   **Calendario Interattivo:** Basato su **FullCalendar.js**, permette di visualizzare e gestire gli appuntamenti con un'interfaccia moderna.
 *   **Gestione Appuntamenti (CRUD):**
-    *   **Crea:** Clicca su un giorno per aggiungere un nuovo appuntamento.
-    *   **Aggiorna:** Trascina un appuntamento per cambiarne la data.
-    *   **Modifica/Cancella:** Clicca su un appuntamento esistente per modificarne il titolo o per eliminarlo.
-*   **Notifiche Telegram:** Integrazione nativa con Telegram per inviare notifiche immediate per ogni creazione, modifica o cancellazione di un appuntamento.
-*   **Shortcode Semplice:** Inserisci il calendario in qualsiasi pagina o articolo con il semplice shortcode `[wp_vet_calendar]`.
-*   **Sicuro e Affidabile:** Tutte le operazioni sono protette con nonce di WordPress, sanitizzazione dei dati e controlli sui permessi utente.
-*   **Pagina Impostazioni:** Una pagina dedicata nella bacheca di WordPress per configurare facilmente il token del bot e l'ID della chat di Telegram.
-*   **Custom Post Type:** Gli appuntamenti vengono salvati in un custom post type `appointment`, perfettamente integrato con l'ecosistema di WordPress.
+    *   **Crea:** Clicca su un giorno per aprire un modale e inserire i dettagli: nome proprietario, nome animale e motivo della visita.
+    *   **Modifica:** Clicca su un appuntamento per aggiornarne i dettagli.
+    *   **Riprogramma:** Trascina un appuntamento su un altro giorno per cambiarne la data.
+    *   **Elimina:** Cancella un appuntamento direttamente dal modale di modifica.
+*   **Notifiche Telegram:** Integrazione nativa per inviare notifiche immediate per ogni azione sugli appuntamenti.
+*   **Shortcode Semplice:** Inserisci il calendario in qualsiasi pagina con `[wp_vet_calendar]`.
+*   **Sicuro e Affidabile:** Protezione contro CSRF (nonce), XSS (sanitizzazione) e accessi non autorizzati.
+*   **Pagina Impostazioni:** Configura facilmente il token del bot e l'ID della chat di Telegram dalla bacheca.
+*   **Custom Post Type:** Gli appuntamenti sono salvati come `appointment`, integrandosi nell'ecosistema WordPress.
 
 ---
 
 ## Installazione
 
-1.  **Download:** Scarica il file `.zip` del plugin dalla pagina di release.
+1.  **Download:** Scarica il file `.zip` del plugin.
 2.  **Caricamento:** Dalla bacheca di WordPress, vai su `Plugin > Aggiungi nuovo > Carica plugin`.
-3.  **Selezione:** Seleziona il file `.zip` scaricato e clicca su `Installa ora`.
-4.  **Attivazione:** Una volta completata l'installazione, clicca su `Attiva plugin`.
+3.  **Selezione:** Seleziona il file `.zip` e clicca su `Installa ora`.
+4.  **Attivazione:** Al termine dell'installazione, clicca su `Attiva plugin`.
 
 ---
 
@@ -50,42 +49,43 @@ Il plugin è stato sviluppato con un'attenzione particolare alla **sicurezza**, 
 
 ### 1. Configurare le Notifiche Telegram
 
-Dopo l'attivazione, è necessario configurare il plugin per inviare le notifiche:
+Per abilitare le notifiche, è necessario fornire le credenziali del tuo bot Telegram:
 
 1.  Vai su `Impostazioni > WP Vet Plugin` nella bacheca di WordPress.
-2.  Inserisci il **Token del Bot Telegram** e l'**ID della Chat** nei rispettivi campi.
-    *   Per ottenere un **Token**, parla con [BotFather](https://t.me/botfather) su Telegram.
-    *   Per ottenere un **Chat ID**, puoi usare un bot come [userinfobot](https://t.me/userinfobot).
+2.  Inserisci il **Token del Bot Telegram** e l'**ID della Chat**.
+    *   Per creare un bot e ottenere un **Token**, contatta [BotFather](https://t.me/botfather) su Telegram.
+    *   Per trovare il tuo **Chat ID**, puoi usare un bot di servizio come [userinfobot](https://t.me/userinfobot).
 3.  Clicca su `Salva le modifiche`.
 
 ### 2. Visualizzare il Calendario
 
-Per mostrare il calendario degli appuntamenti sul tuo sito:
-
-1.  Crea una nuova pagina (o modifica una esistente) andando su `Pagine > Aggiungi nuova`.
-2.  Inserisci in un blocco di testo il seguente shortcode:
-    ```
-    [wp_vet_calendar]
-    ```
-3.  Pubblica o aggiorna la pagina. Il calendario interattivo sarà visibile visitando quella pagina.
+1.  Crea o modifica una pagina (`Pagine > Aggiungi nuova`).
+2.  Inserisci in un blocco di testo lo shortcode: `[wp_vet_calendar]`
+3.  Pubblica la pagina. Il calendario interattivo sarà visibile.
 
 ---
 
-## Sicurezza
+## Dettagli Tecnici
 
-La sicurezza è una priorità per questo plugin. Sono state implementate le seguenti misure:
-
-*   **Nonce (Number used once):** Tutte le azioni AJAX (creazione, aggiornamento, cancellazione) sono protette da nonce per prevenire attacchi di tipo Cross-Site Request Forgery (CSRF).
-*   **Sanitizzazione dell'Input e dell'Output:** Tutti i dati inviati e ricevuti vengono scrupolosamente sanitizzati e validati per prevenire attacchi XSS e SQL Injection.
-*   **Controllo dei Permessi:** Le azioni sensibili (come la gestione degli appuntamenti) possono essere eseguite solo da utenti con i permessi adeguati (es. `edit_posts`).
+*   **Struttura Plugin:** Boilerplate standard di WordPress per garantire manutenibilità e scalabilità.
+*   **Gestione Hook:** Un `Loader` centralizzato per registrare tutte le azioni e i filtri.
+*   **Backend:** Custom Post Type (`appointment`) e Settings API per la pagina di configurazione.
+*   **Frontend:** **FullCalendar.js** per il calendario, **Toastr.js** per le notifiche non invadenti e un modale personalizzato per l'inserimento dati.
+*   **Comunicazione:** Le interazioni avvengono tramite la **WordPress AJAX API**, con risposte in formato JSON.
 
 ---
 
-## Struttura del Codice
+## Contribuire
 
-Il plugin segue la struttura standard raccomandata per i plugin WordPress, con una chiara separazione delle responsabilità:
+Le contribuzioni sono benvenute! Se vuoi migliorare il plugin, leggi le nostre linee guida in `CONTRIBUTING.md`.
 
-*   `/public`: Gestisce la parte pubblica del plugin, inclusi shortcode, stili e script del frontend.
-*   `/admin`: Gestisce la bacheca, la pagina delle impostazioni e le funzionalità amministrative.
-*   `/includes`: Contiene la logica di base del plugin, le classi per l'attivazione/disattivazione e il loader per la gestione centralizzata degli hook.
-*   `/assets`: Contiene le librerie di terze parti come FullCalendar, Toastr, ecc.
+---
+
+## Changelog
+
+### 1.0.0 - 2024-07-25
+*   **Initial Release**
+*   Refactoring completo del codice, documentazione e hardening di sicurezza.
+*   Implementazione calendario interattivo con operazioni CRUD.
+*   Integrazione notifiche Telegram.
+*   Creazione pagina impostazioni e shortcode per la visualizzazione.

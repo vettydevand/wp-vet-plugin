@@ -1,49 +1,49 @@
 # Come Contribuire a WP Vet Plugin
 
-Prima di tutto, grazie per il tuo interesse a contribuire al miglioramento di **WP Vet Plugin**! Ogni contributo, che sia una segnalazione di bug, un suggerimento per una nuova funzionalità o un miglioramento del codice, è molto apprezzato.
+Grazie per il tuo interesse nel contribuire a WP Vet Plugin! Ogni contributo è benvenuto e apprezzato. Di seguito trovi le linee guida per partecipare al progetto.
 
 ---
 
-## Canali di Contribuzione
+## Tipi di Contributi
 
-Per mantenere il processo organizzato, ti chiediamo di utilizzare i seguenti canali:
-
-*   **Segnalazioni di Bug:** Utilizza la sezione "Issues" del repository GitHub.
-*   **Suggerimenti e Nuove Funzionalità:** Utilizza la sezione "Issues" del repository GitHub, preferibilmente con un'etichetta "enhancement".
-
----
-
-## Come Segnalare un Bug
-
-Una buona segnalazione di bug è fondamentale per aiutarci a risolvere il problema il più rapidamente possibile. Quando apri una nuova "Issue", per favore, includi le seguenti informazioni:
-
-1.  **Titolo Chiaro e Descrittivo:** Un titolo che riassuma il problema. Esempio: "Errore JavaScript quando si trascina un appuntamento sul calendario".
-
-2.  **Descrizione Dettagliata:**
-    *   **Comportamento Atteso:** Cosa ti aspettavi che accadesse.
-    *   **Comportamento Effettivo:** Cosa è successo invece.
-
-3.  **Passaggi per Riprodurre il Problema:** Fornisci una sequenza di passaggi chiara che ci permetta di replicare il bug. Esempio:
-    1.  Vai alla pagina contenente lo shortcode `[wp_vet_calendar]`.
-    2.  Crea un nuovo appuntamento il giorno 10.
-    3.  Trascina l'appuntamento sul giorno 15.
-    4.  Apri la console del browser e osserva l'errore.
-
-4.  **Ambiente di Test:**
-    *   **Versione del Plugin:** La versione di WP Vet Plugin che stai utilizzando.
-    *   **Versione di WordPress:**
-    *   **Versione di PHP:**
-    *   **Browser:** (es. Chrome, Firefox, Safari) e la sua versione.
-
-5.  **Informazioni Aggiuntive (Opzionale):** Screenshot, messaggi di errore specifici dalla console del browser o dai log di PHP sono estremamente utili.
+*   **Segnalazione di Bug:** Se trovi un problema, per favore, apri una issue dettagliata.
+*   **Suggerimenti di Funzionalità:** Hai un'idea per migliorare il plugin? Apri una issue e descrivila.
+*   **Pull Request:** Se vuoi contribuire direttamente con del codice, sei nel posto giusto.
 
 ---
 
-## Come Proporre un Miglioramento
+## Linee Guida per i Contributi
 
-Siamo sempre aperti a nuove idee per rendere WP Vet Plugin ancora migliore. Se hai un suggerimento per una nuova funzionalità o un miglioramento per una esistente, apri una "Issue" e descrivi la tua proposta.
+### Segnalare un Bug
 
-*   **Problema e Soluzione:** Descrivi il problema o il caso d'uso che la tua proposta mira a risolvere. Spiega chiaramente come la tua idea affronterebbe il problema.
-*   **Alternative (se presenti):** Se hai considerato altre soluzioni, menzionale e spiega perché preferisci la tua proposta.
+Prima di aprire una issue, per favore, controlla che non ne esista già una simile.
 
-Grazie ancora per il tuo contributo a rendere questo plugin più stabile e funzionale per tutti!
+Quando segnali un bug, includi:
+
+1.  **Versione di WordPress e del Plugin.**
+2.  **Descrizione del Bug:** Cosa ti aspettavi che succedesse e cosa è successo invece?
+3.  **Passi per Riprodurlo:** Una lista chiara dei passaggi per replicare il problema.
+4.  **Eventuali Errori:** Screenshot o copia/incolla di qualsiasi errore visualizzato o presente nei log.
+
+### Inviare una Pull Request (PR)
+
+1.  **Fork del Repository:** Crea un fork del progetto sul tuo account GitHub.
+2.  **Clona il Fork:** Clona il tuo fork in locale: `git clone https://github.com/TUO_USERNAME/wp-vet-plugin.git`
+3.  **Crea un Branch:** Crea un nuovo branch per le tue modifiche: `git checkout -b feature/la-tua-nuova-funzionalita` o `fix/un-bug-specifico`.
+4.  **Sviluppa:** Apporta le tue modifiche al codice. Assicurati di seguire gli standard di codifica di WordPress e di documentare il tuo codice con commenti PHPDoc/JSDoc.
+5.  **Commit:** Esegui commit chiari e significativi.
+    ```bash
+    git commit -m "FEAT: Aggiunge una nuova e fantastica funzionalità"
+    ```
+6.  **Push:** Carica il tuo branch sul tuo fork: `git push origin NOME_DEL_TUO_BRANCH`.
+7.  **Apri la Pull Request:** Apri una Pull Request dal tuo fork al repository principale.
+
+---
+
+## Standard di Codice
+
+*   **PHP:** Segui i [WordPress PHP Coding Standards](https://developer.wordpress.org/coding-standards/wordpress-coding-standards/php/).
+*   **JavaScript:** Segui i [WordPress JavaScript Coding Standards](https://developer.wordpress.org/coding-standards/wordpress-coding-standards/javascript/).
+*   **Documentazione:** Commenta il tuo codice in modo appropriato per spiegare le parti complesse.
+
+Grazie ancora per il tuo contributo!
