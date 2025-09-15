@@ -1,36 +1,45 @@
 <!DOCTYPE html>
-<html>
+<html lang="it">
 <head>
-    <title>WP Vet Calendar</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.10.2/fullcalendar.min.css" />
-    <link rel="stylesheet" href="styles.css" />
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/moment.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.10.2/fullcalendar.min.js"></script>
+    <meta charset="UTF-8">
+    <title>Calendario Appuntamenti</title>
+    <link href='https://unpkg.com/@fullcalendar/core@4.4.2/main.min.css' rel='stylesheet' />
+    <link href='https://unpkg.com/@fullcalendar/daygrid@4.4.2/main.min.css' rel='stylesheet' />
+    <link href='https://unpkg.com/@fullcalendar/timegrid@4.4.2/main.min.css' rel='stylesheet' />
+    <link href="styles.css" rel="stylesheet" />
+    <script src='https://unpkg.com/@fullcalendar/core@4.4.2/main.min.js'></script>
+    <script src='https://unpkg.com/@fullcalendar/interaction@4.4.2/main.min.js'></script>
+    <script src='https://unpkg.com/@fullcalendar/daygrid@4.4.2/main.min.js'></script>
+    <script src='https://unpkg.com/@fullcalendar/timegrid@4.4.2/main.min.js'></script>
+    <script src="scripts.js" defer></script>
 </head>
 <body>
+    <h1>Calendario Appuntamenti</h1>
+    <div id='calendar'></div>
 
-<div id="calendar"></div>
-
-<!-- Modal -->
-<div id="appointmentModal" class="modal">
-    <div class="modal-content">
-        <span class="close-button">&times;</span>
-        <h2 id="modalTitle"></h2>
-        <form id="appointmentForm">
-            <input type="hidden" id="appointmentId">
-            <label for="appointmentTitle">Title</label>
-            <input type="text" id="appointmentTitle" required>
-            <label for="appointmentStart">Start</label>
-            <input type="datetime-local" id="appointmentStart" required>
-            <label for="appointmentEnd">End</label>
-            <input type="datetime-local" id="appointmentEnd" required>
-            <button type="submit" id="saveButton">Save</button>
-            <button type="button" id="deleteButton">Delete</button>
-        </form>
+    <!-- Modale per Appuntamenti -->
+    <div id="appointmentModal" class="modal">
+        <div class="modal-content">
+            <span class="close-button">&times;</span>
+            <h2 id="modalTitle">Aggiungi/Modifica Appuntamento</h2>
+            <form id="appointmentForm">
+                <input type="hidden" id="appointmentId">
+                
+                <label for="appointmentTitle">Titolo:</label>
+                <input type="text" id="appointmentTitle" required>
+                
+                <label for="appointmentStart">Inizio:</label>
+                <input type="datetime-local" id="appointmentStart" required>
+                
+                <label for="appointmentEnd">Fine:</label>
+                <input type="datetime-local" id="appointmentEnd" required>
+                
+                <div class="modal-buttons">
+                    <button type="submit" id="saveButton">Salva</button>
+                    <button type="button" id="deleteButton" style="display: none;">Elimina</button>
+                </div>
+            </form>
+        </div>
     </div>
-</div>
-
-<script src="scripts.js"></script>
 </body>
 </html>

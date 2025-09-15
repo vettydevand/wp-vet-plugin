@@ -1,104 +1,179 @@
-
 document.addEventListener('DOMContentLoaded', function() {
-    var calendarEl = document.getElementById('calendar');
-    var modal = document.getElementById('appointmentModal');
-    var closeModal = document.getElementsByClassName('close-button')[0];
-    var appointmentForm = document.getElementById('appointmentForm');
-    var modalTitle = document.getElementById('modalTitle');
-    var appointmentId = document.getElementById('appointmentId');
-    var appointmentTitle = document.getElementById('appointmentTitle');
-    var appointmentStart = document.getElementById('appointmentStart');
-    var appointmentEnd = document.getElementById('appointmentEnd');
-    var saveButton = document.getElementById('saveButton');
-    var deleteButton = document.getElementById('deleteButton');
+    // Elementi del DOM
+    const calendarEl = document.getElementById('calendar');
+    const modal = document.getElementById('appointmentModal');
+    const closeModalBtn = document.querySelector('.close-button');
+    const appointmentForm = document.getElementById('appointmentForm');
+    const modalTitle = document.getElementById('modalTitle');
+    const appointmentId = document.getElementById('appointmentId');
+    const appointmentTitle = document.getElementById('appointmentTitle');
+    const appointmentStart = document.getElementById('appointmentStart');
+    const appointmentEnd = document.getElementById('appointmentEnd');
+    const saveButton = document.getElementById('saveButton');
+    const deleteButton = document.getElementById('deleteButton');
 
-    var calendar = new FullCalendar.Calendar(calendarEl, {
-        plugins: [ 'interaction', 'dayGrid', 'timeGrid' ],
+    // Funzione wrapper per le chiamate API
+    async function apiCall(url, method, data) {
+        try {
+            const response = await fetch(url, {
+                method: method,
+                headers: { 'Content-Type': 'application/json' },
+                body: data ? JSON.stringify(data) : undefined,
+            });
+
+            const result = await response.json();
+
+            if (!response.ok) {
+                throw new Error(result.message || `Errore HTTP: ${response.status}`);
+            }
+            return result;
+        } catch (error) {
+            console.error('Errore API:', error);
+            alert(`Operazione fallita: ${error.message}`);
+            throw error; // Rilancia l'errore per essere gestito dal chiamante
+        }
+    }
+
+    // Converte una data in formato ISO per l'input datetime-local
+    function toLocalISOString(date) {
+        const pad = (num) => num.toString().padStart(2, '0');
+        const year = date.getFullYear();
+        const month = pad(date.getMonth() + 1);
+        const day = pad(date.getDate());
+        const hours = pad(date.getHours());
+        const minutes = pad(date.getMinutes());
+        return `${year}-${month}-${day}T${hours}:${minutes}`;
+    }
+
+    // Inizializzazione di FullCalendar
+    const calendar = new FullCalendar.Calendar(calendarEl, {
+        plugins: ['interaction', 'dayGrid', 'timeGrid'],
         header: {
             left: 'prev,next today',
             center: 'title',
             right: 'dayGridMonth,timeGridWeek,timeGridDay'
         },
-        events: 'api.php',
-        selectable: true,
-        select: function(info) {
-            modalTitle.innerText = 'Add Appointment';
-            appointmentId.value = '';
-            appointmentTitle.value = '';
-            appointmentStart.value = moment(info.start).format('YYYY-MM-DDTHH:mm');
-            appointmentEnd.value = moment(info.end).format('YYYY-MM-DDTHH:mm');
-            deleteButton.style.display = 'none';
-            modal.style.display = 'block';
+        locale: 'it', // Imposta la lingua italiana
+        buttonText: { today: 'oggi', month: 'mese', week: 'settimana', day: 'giorno' },
+        events: (fetchInfo, successCallback, failureCallback) => {
+            apiCall('api.php', 'GET')
+                .then(events => successCallback(events))
+                .catch(err => failureCallback(err));
         },
+        selectable: true,
+        editable: true, // Abilita il drag-and-drop e il resize
+
+        // Apre il modale per creare un nuovo evento
+        select: function(info) {
+            openModal({
+                start: info.start,
+                end: info.end
+            });
+        },
+
+        // Apre il modale per modificare un evento esistente
         eventClick: function(info) {
-            modalTitle.innerText = 'Edit Appointment';
-            appointmentId.value = info.event.id;
-            appointmentTitle.value = info.event.title;
-            appointmentStart.value = moment(info.event.start).format('YYYY-MM-DDTHH:mm');
-            appointmentEnd.value = moment(info.event.end).format('YYYY-MM-DDTHH:mm');
-            deleteButton.style.display = 'inline-block';
-            modal.style.display = 'block';
-        }
+            openModal({
+                id: info.event.id,
+                title: info.event.title,
+                start: info.event.start,
+                end: info.event.end
+            });
+        },
+
+        // Gestisce l'aggiornamento di un evento (drag o resize)
+        eventDrop: handleEventUpdate,
+        eventResize: handleEventUpdate,
     });
 
     calendar.render();
 
-    closeModal.onclick = function() {
+    // Funzioni di gestione del modale
+    function openModal(data = {}) {
+        appointmentId.value = data.id || '';
+        appointmentTitle.value = data.title || '';
+        appointmentStart.value = toLocalISOString(data.start ? new Date(data.start) : new Date());
+        appointmentEnd.value = toLocalISOString(data.end ? new Date(data.end) : new Date(new Date().getTime() + 60*60*1000)); // Default a 1 ora dopo
+
+        modalTitle.innerText = data.id ? 'Modifica Appuntamento' : 'Aggiungi Appuntamento';
+        deleteButton.style.display = data.id ? 'inline-block' : 'none';
+        modal.style.display = 'block';
+    }
+
+    function closeModal() {
         modal.style.display = 'none';
+        appointmentForm.reset();
     }
 
-    window.onclick = function(event) {
-        if (event.target == modal) {
-            modal.style.display = 'none';
-        }
-    }
+    // Gestione degli eventi del modale
+    closeModalBtn.addEventListener('click', closeModal);
+    window.addEventListener('click', (event) => {
+        if (event.target === modal) closeModal();
+    });
 
-    appointmentForm.onsubmit = function(e) {
+    // Gestione del salvataggio (creazione/aggiornamento)
+    appointmentForm.addEventListener('submit', async (e) => {
         e.preventDefault();
-        var id = appointmentId.value;
-        var title = appointmentTitle.value;
-        var start = appointmentStart.value;
-        var end = appointmentEnd.value;
-
-        var url = id ? 'api.php' : 'api.php';
-        var method = id ? 'PUT' : 'POST';
-
-        var data = {
-            id: id,
-            title: title,
-            start: start,
-            end: end
+        
+        const eventData = {
+            id: appointmentId.value || null,
+            title: appointmentTitle.value.trim(),
+            start: new Date(appointmentStart.value).toISOString(),
+            end: new Date(appointmentEnd.value).toISOString(),
         };
 
-        fetch(url, {
-            method: method,
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(data),
-        })
-        .then(response => response.json())
-        .then(function() {
-            modal.style.display = 'none';
-            calendar.refetchEvents();
-        });
-    }
+        if (!eventData.title) {
+            alert('Il titolo è obbligatorio.');
+            return;
+        }
 
-    deleteButton.onclick = function() {
-        var id = appointmentId.value;
-        if (confirm('Are you sure you want to delete this event?')) {
-            fetch('api.php', {
-                method: 'DELETE',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({id: id}),
-            })
-            .then(response => response.json())
-            .then(function() {
-                modal.style.display = 'none';
+        const method = eventData.id ? 'PUT' : 'POST';
+
+        try {
+            await apiCall('api.php', method, eventData);
+            closeModal();
+            calendar.refetchEvents();
+            alert(`Appuntamento ${eventData.id ? 'aggiornato' : 'creato'} con successo!`);
+        } catch (err) {
+            // L'errore è già gestito in apiCall, ma si potrebbe aggiungere logica qui
+        }
+    });
+
+    // Gestione dell'eliminazione
+    deleteButton.addEventListener('click', async () => {
+        const id = appointmentId.value;
+        if (id && confirm('Sei sicuro di voler eliminare questo appuntamento?')) {
+            try {
+                await apiCall('api.php', 'DELETE', { id });
+                closeModal();
                 calendar.refetchEvents();
-            });
+                alert('Appuntamento eliminato con successo!');
+            } catch (err) {
+                // L'errore è già gestito in apiCall
+            }
+        }
+    });
+
+    // Funzione per aggiornare l'evento dopo drag o resize
+    async function handleEventUpdate(info) {
+        const eventData = {
+            id: info.event.id,
+            title: info.event.title,
+            start: info.event.start.toISOString(),
+            end: info.event.end ? info.event.end.toISOString() : new Date(info.event.start.getTime() + 60*60*1000).toISOString(),
+        };
+
+        if (!confirm("Confermi la modifica di questo appuntamento?")) {
+            info.revert(); // Annulla la modifica se l'utente non conferma
+            return;
+        }
+
+        try {
+            await apiCall('api.php', 'PUT', eventData);
+            calendar.refetchEvents();
+            alert('Appuntamento aggiornato con successo!');
+        } catch (err) {
+            info.revert();
         }
     }
 });
