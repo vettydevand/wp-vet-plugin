@@ -10,6 +10,7 @@ Questo plugin può funzionare in due modalità: come un tradizionale **plugin di
 - [Modalità di Utilizzo](#modalità-di-utilizzo)
 - [Installazione (Plugin WordPress)](#installazione-plugin-wordpress)
 - [Installazione (Standalone)](#installazione-standalone)
+- [Deployment Automatizzato (Infrastructure as Code)](#deployment-automatizzato-infrastructure-as-code)
 - [Guida Rapida all'Uso](#guida-rapida-alluso)
 - [Contribuire](#contribuire)
 
@@ -77,6 +78,18 @@ Questa modalità non richiede WordPress. È sufficiente un server web con suppor
 - `scripts.js`: Logica del frontend per interagire con FullCalendar e le API.
 - `api.php`: Gestisce le richieste (lettura, creazione, aggiornamento, cancellazione) dal frontend.
 - `database.php`: Gestisce la connessione e l'inizializzazione del database SQLite.
+
+---
+
+## Deployment Automatizzato (Infrastructure as Code)
+
+Per semplificare e standardizzare il deployment della versione **standalone**, abbiamo preparato alcuni esempi di Infrastructure as Code (IaC). Questi strumenti ti permettono di definire e provisionare l'intera infrastruttura e configurazione del software tramite codice, rendendo il processo più rapido, ripetibile e meno soggetto a errori.
+
+Visita la cartella [`iac/`](./iac) per accedere alle guide e agli esempi per i seguenti strumenti:
+
+- **[cloud-init](./iac/cloud-init):** Ideale per la configurazione iniziale automatica di una macchina virtuale al suo primo avvio. Perfetto per provider cloud come AWS, Google Cloud, DigitalOcean, etc.
+- **[Ansible](./iac/ansible):** Uno strumento potente per la gestione della configurazione. Puoi usarlo per configurare un server esistente o per orchestrare deployment complessi.
+- **[OpenTofu (Terraform)](./iac/opentofu):** Permette di definire e creare l'intera infrastruttura cloud (VM, reti, firewall) come codice, integrandosi perfettamente con `cloud-init` per un setup completo.
 
 ---
 
