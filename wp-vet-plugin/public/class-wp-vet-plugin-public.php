@@ -27,14 +27,14 @@ class WPVetPlugin_Public {
         wp_localize_script(
             $this->plugin_name,
             'wp_vet_ajax',
-            array('ajax_url' => admin_url('admin-ajax.php'))
+            array(
+                'ajax_url' => admin_url('admin-ajax.php'),
+                'nonce' => wp_create_nonce('get_appointments_nonce')
+            )
         );
     }
-    
-    public function get_appointments_ajax() {
-        $start_date = sanitize_text_field($_POST['start']);
-        $end_date = sanitize_text_field($_POST['end']);
 
+    private function get_appointments($start_date, $end_date) {
         $events = array();
         $args = array(
             'post_type' => 'appointment',
@@ -55,7 +55,7 @@ class WPVetPlugin_Public {
         if ($appointments_query->have_posts()) {
             while ($appointments_query->have_posts()) {
                 $appointments_query->the_post();
-                
+
                 $appointment_date = get_post_meta(get_the_ID(), 'appointment_date', true);
                 if (empty($appointment_date)) {
                     $appointment_date = get_the_date('Y-m-d');
@@ -64,14 +64,29 @@ class WPVetPlugin_Public {
                 $events[] = array(
                     'title' => get_the_title(),
                     'start' => $appointment_date,
+                    'id' => get_the_ID(),
                 );
             }
             wp_reset_postdata();
         }
 
-        wp_send_json_success($events);
+        return $events;
     }
 
+    public function get_appointments_ajax() {
+        check_ajax_referer('get_appointments_nonce', 'nonce');
+        
+        $start_date = isset($_POST['start']) ? sanitize_text_field($_POST['start']) : null;
+        $end_date = isset($_POST['end']) ? sanitize_text_field($_POST['end']) : null;
+
+        if (!$start_date || !$end_date) {
+            wp_send_json_error('Invalid date range.');
+        }
+
+        $events = $this->get_appointments($start_date, $end_date);
+
+        wp_send_json_success($events);
+    }
 
     public function display_calendar() {
         return '<div id="calendar"></div>';

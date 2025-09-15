@@ -9,6 +9,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     type: 'POST',
                     data: {
                         action: 'get_appointments',
+                        nonce: wp_vet_ajax.nonce,
                         start: fetchInfo.startStr,
                         end: fetchInfo.endStr
                     },
