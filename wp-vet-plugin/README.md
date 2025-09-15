@@ -10,6 +10,7 @@ Questo plugin può funzionare in due modalità: come un tradizionale **plugin di
 - [Modalità di Utilizzo](#modalità-di-utilizzo)
 - [Installazione (Plugin WordPress)](#installazione-plugin-wordpress)
 - [Installazione (Standalone)](#installazione-standalone)
+- [Personalizzazione (Standalone)](#personalizzazione-standalone)
 - [Deployment Automatizzato (Infrastructure as Code)](#deployment-automatizzato-infrastructure-as-code)
 - [Guida Rapida all'Uso](#guida-rapida-alluso)
 - [Contribuire](#contribuire)
@@ -20,6 +21,7 @@ Questo plugin può funzionare in due modalità: come un tradizionale **plugin di
 - **Gestione Eventi Drag & Drop:** Crea, sposta e ridimensiona gli appuntamenti direttamente dal calendario.
 - **Modale Intuitiva:** Inserisci, modifica o elimina i dettagli dell'appuntamento con un semplice clic.
 - **Backend Leggero:** Utilizza AJAX per le operazioni nel plugin WordPress e un backend PHP con SQLite per la versione standalone.
+- **Altamente Personalizzabile:** Configura il percorso del database e personalizza l'aspetto (colori, font, logo) tramite semplici file di configurazione.
 - **Indipendente:** La modalità standalone non richiede dipendenze esterne complesse, solo PHP e SQLite.
 
 ## Modalità di Utilizzo
@@ -61,23 +63,56 @@ Questa modalità non richiede WordPress. È sufficiente un server web con suppor
     ```
     Oppure scarica e decomprimi lo zip.
 
-2.  **Avvia il Server PHP:**
+2.  **Configurazione Iniziale (Opzionale):**
+    Naviga nella cartella `wp-vet-plugin/modern-standalone/`. Qui troverai dei file di configurazione di esempio:
+    - `config.php.example`: Per configurare il percorso del database.
+    - `theme.json`: Per personalizzare l'aspetto dell'applicazione.
+    
+    Leggi la sezione [Personalizzazione (Standalone)](#personalizzazione-standalone) per maggiori dettagli.
+
+3.  **Avvia il Server PHP:**
     Apri il terminale, naviga fino alla cartella `modern-standalone` e avvia il server di sviluppo integrato di PHP.
     ```bash
     cd percorso/del/progetto/wp-vet-plugin/modern-standalone/
     php -S localhost:8000
     ```
 
-3.  **Apri il Calendario:**
-    Apri il tuo browser e visita [http://localhost:8000](http://localhost:8000). Il database `calendar.sqlite` verrà creato automaticamente al primo utilizzo.
+4.  **Apri il Calendario:**
+    Apri il tuo browser e visita [http://localhost:8000](http://localhost:8000). Il database `database.sqlite` verrà creato automaticamente al primo utilizzo nel percorso predefinito o in quello specificato.
 
-### Struttura dei File Standalone
+---
 
-- `index.html`: La pagina principale che ospita il calendario.
-- `styles.css`: Stili per l'interfaccia e il modale.
-- `scripts.js`: Logica del frontend per interagire con FullCalendar e le API.
-- `api.php`: Gestisce le richieste (lettura, creazione, aggiornamento, cancellazione) dal frontend.
-- `database.php`: Gestisce la connessione e l'inizializzazione del database SQLite.
+## Personalizzazione (Standalone)
+
+L'applicazione standalone è progettata per essere facilmente personalizzabile senza modificare il codice sorgente.
+
+### 1. Configurazione del Backend (`config.php`)
+
+Puoi specificare un percorso personalizzato per il file del database SQLite. Questo è utile per salvare i dati in una posizione specifica o per gestire più database.
+
+1.  **Crea il file di configurazione:**
+    Nella cartella `modern-standalone/`, rinomina o copia `config.php.example` in `config.php`.
+
+2.  **Modifica il percorso:**
+    Apri `config.php` e modifica la costante `DB_PATH` con il percorso assoluto o relativo desiderato.
+    ```php
+    <?php
+    // Esempio: Salva il database in una cartella dati fuori dalla root del web server
+    define('DB_PATH', __DIR__ . '/../data/my_clinic_database.sqlite');
+    ```
+
+**Importante:** `config.php` è già incluso nel file `.gitignore` per prevenire che le tue configurazioni private vengano inviate a un repository Git.
+
+### 2. Theming e Personalizzazione del Frontend (`theme.json`)
+
+Puoi cambiare l'aspetto dell'applicazione (colori, font, nome e logo) modificando il file `theme.json` che si trova in `modern-standalone/`.
+
+- **`appName`**: Il nome della tua clinica o applicazione, mostrato in alto.
+- **`logoUrl`**: Il percorso del tuo logo. Per un risultato ottimale, inserisci il tuo file (es. `logo.png`) nella cartella `assets/` e imposta il valore su `"assets/logo.png"`.
+- **`theme.colors`**: Personalizza i colori principali dell'interfaccia. I nomi (`primary`, `success`, `danger`, etc.) si basano sulla nomenclatura standard di framework come Bootstrap. Puoi usare qualsiasi codice colore CSS (es. `#RRGGBB`).
+- **`theme.fonts.main`**: Definisci il font principale per l'applicazione.
+
+Se `theme.json` viene rimosso o contiene errori, l'applicazione tornerà a un tema di default per garantire la continuità del servizio.
 
 ---
 
