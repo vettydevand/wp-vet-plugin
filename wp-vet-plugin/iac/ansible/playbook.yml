@@ -1,0 +1,56 @@
+---
+- name: Configura server per WP Vet Plugin (Standalone)
+  hosts: all
+  become: yes
+  vars:
+    project_src: "https://github.com/google-gemini/generative-ai-docs"
+    project_dest: "/var/www/wp-vet-plugin"
+
+  tasks:
+    - name: Aggiorna la cache di APT e installa i pacchetti necessari
+      apt:
+        name:
+          - nginx
+          - php-fpm
+          - php-sqlite3
+          - git
+        state: present
+        update_cache: yes
+
+    - name: Clona o aggiorna il repository del progetto
+      git:
+        repo: "{{ project_src }}"
+        dest: "{{ project_dest }}"
+        version: main
+        force: yes
+
+    - name: Crea il file di configurazione per Nginx
+      template:
+        src: templates/nginx.conf.j2
+        dest: /etc/nginx/sites-available/wp-vet-plugin
+
+    - name: Abilita il nuovo sito Nginx
+      file:
+        src: /etc/nginx/sites-available/wp-vet-plugin
+        dest: /etc/nginx/sites-enabled/wp-vet-plugin
+        state: link
+
+    - name: Rimuove la configurazione di default di Nginx
+      file:
+        path: /etc/nginx/sites-enabled/default
+        state: absent
+      notify: Riavvia Nginx
+
+    - name: Imposta i permessi corretti per la cartella del progetto
+      file:
+        path: "{{ project_dest }}"
+        state: directory
+        recurse: yes
+        owner: www-data
+        group: www-data
+
+  handlers:
+    - name: Riavvia Nginx
+      service:
+        name: nginx
+        state: restarted
