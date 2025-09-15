@@ -1,0 +1,28 @@
+version: '3.8'
+
+services:
+  # Servizio Web Server (Nginx)
+  web:
+    build:
+      context: ../../ # Il contesto è la root del progetto
+      dockerfile: ./iac/containerization/Dockerfile # Specifica il percorso del Dockerfile
+    ports:
+      - "8080:80" # Esponi la porta 80 del container sulla porta 8080 dell'host
+    volumes:
+      # Monta il codice sorgente per lo sviluppo live
+      # Le modifiche al codice host si rifletteranno immediatamente nel container
+      - ../../wp-vet-plugin/modern-standalone:/usr/share/nginx/html
+    depends_on:
+      - php-fpm # Dipende dal servizio PHP-FPM
+
+  # Servizio PHP (PHP-FPM)
+  php-fpm:
+    image: php:8.2-fpm-alpine
+    volumes:
+      # Monta lo stesso codice sorgente per l'esecuzione degli script PHP
+      - ../../wp-vet-plugin/modern-standalone:/usr/share/nginx/html
+      # Crea un volume per il database SQLite per renderlo persistente
+      - sqlite_data:/usr/share/nginx/html
+
+volumes:
+  sqlite_data: # Volume per la persistenza del database SQLite
