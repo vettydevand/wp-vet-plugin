@@ -22,3 +22,19 @@ WP Vet Plugin is a WordPress plugin that allows veterinary clinics to manage the
 Once the plugin is activated, a new custom post type called "Appointments" will be available. You can manage appointments from the WordPress admin or directly through the calendar on the front-end.
 
 To display the calendar, you can use the `[wp_vet_calendar]` shortcode on any page or post.
+
+## Standalone Mode
+
+This plugin can be run with a minimal WordPress installation, without needing a full-fledged website. This is useful if you only want to use the appointment calendar functionality.
+
+### Setup
+
+1.  **Install WordPress:** Follow the official WordPress installation guide to set up WordPress in a directory on your web server. You don't need to configure a theme or create any content like pages or posts.
+2.  **Install and Activate Plugin:** Install and activate the WP Vet Plugin as described in the **Installation** section.
+3.  **Access the Calendar:** You can now access the calendar directly in your browser by navigating to the following URL:
+
+    `https://your-wordpress-site.com/wp-content/plugins/wp-vet-plugin/standalone/standalone-display.php`
+
+    Replace `https://your-wordpress-site.com` with the actual URL of your WordPress installation.
+
+This will give you a full-page view of the calendar, with all its interactive features, without the rest of the WordPress site interface.
