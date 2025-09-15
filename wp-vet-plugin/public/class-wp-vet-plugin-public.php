@@ -18,11 +18,13 @@ class WPVetPlugin_Public {
     public function enqueue_styles() {
         wp_enqueue_style($this->plugin_name, WP_VET_PLUGIN_URL . 'public/css/wp-vet-plugin-public.css', array(), $this->version, 'all');
         wp_enqueue_style('fullcalendar', WP_VET_PLUGIN_URL . 'assets/css/fullcalendar.min.css', array(), '6.1.11', 'all');
+        wp_enqueue_style('toastr', WP_VET_PLUGIN_URL . 'assets/css/toastr.min.css', array(), '1.0.0', 'all');
     }
 
     public function enqueue_scripts() {
         wp_enqueue_script($this->plugin_name, WP_VET_PLUGIN_URL . 'public/js/wp-vet-plugin-public.js', array('jquery'), $this->version, false);
         wp_enqueue_script('fullcalendar', WP_VET_PLUGIN_URL . 'assets/js/fullcalendar.min.js', array('jquery'), '6.1.11', true);
+        wp_enqueue_script('toastr', WP_VET_PLUGIN_URL . 'assets/js/toastr.min.js', array(), '1.0.0', true);
 
         wp_localize_script(
             $this->plugin_name,
@@ -92,6 +94,6 @@ class WPVetPlugin_Public {
     }
 
     public function display_calendar() {
-        return '<div id="calendar"></div>';
+        return '<div id="wp-vet-calendar-wrapper"><div id="calendar-loader" class="loader"></div><div id="calendar"></div></div>';
     }
 }

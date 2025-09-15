@@ -1,11 +1,20 @@
 document.addEventListener('DOMContentLoaded', function() {
     var calendarEl = document.getElementById('calendar');
+    var loader = document.getElementById('calendar-loader');
+
     if (calendarEl) {
         var calendar = new FullCalendar.Calendar(calendarEl, {
             initialView: 'dayGridMonth',
             editable: true,
             selectable: true,
             droppable: true,
+            loading: function(isLoading) {
+                if (isLoading) {
+                    loader.style.display = 'block';
+                } else {
+                    loader.style.display = 'none';
+                }
+            },
             events: function(fetchInfo, successCallback, failureCallback) {
                 fetchAppointments(fetchInfo, successCallback, failureCallback);
             },
@@ -36,10 +45,12 @@ document.addEventListener('DOMContentLoaded', function() {
                 if (response.success) {
                     successCallback(response.data);
                 } else {
+                    toastr.error('Failed to fetch appointments');
                     failureCallback(new Error('Failed to fetch appointments'));
                 }
             },
             error: function() {
+                toastr.error('AJAX error while fetching appointments.');
                 failureCallback(new Error('AJAX error'));
             }
         });
@@ -75,13 +86,14 @@ document.addEventListener('DOMContentLoaded', function() {
             },
             success: function(response) {
                 if (response.success) {
+                    toastr.success('Appointment created successfully.');
                     calendar.refetchEvents();
                 } else {
-                    alert('Failed to create appointment: ' + response.data);
+                    toastr.error('Failed to create appointment: ' + response.data);
                 }
             },
             error: function() {
-                alert('AJAX error while creating appointment.');
+                toastr.error('AJAX error while creating appointment.');
             }
         });
     }
@@ -98,13 +110,14 @@ document.addEventListener('DOMContentLoaded', function() {
             },
             success: function(response) {
                 if (response.success) {
+                    toastr.success('Appointment updated successfully.');
                     calendar.refetchEvents();
                 } else {
-                    alert('Failed to update appointment: ' + response.data);
+                    toastr.error('Failed to update appointment: ' + response.data);
                 }
             },
             error: function() {
-                alert('AJAX error while updating appointment.');
+                toastr.error('AJAX error while updating appointment.');
             }
         });
     }
@@ -120,13 +133,14 @@ document.addEventListener('DOMContentLoaded', function() {
             },
             success: function(response) {
                 if (response.success) {
+                    toastr.success('Appointment deleted successfully.');
                     calendar.refetchEvents();
                 } else {
-                    alert('Failed to delete appointment: ' + response.data);
+                    toastr.error('Failed to delete appointment: ' + response.data);
                 }
             },
             error: function() {
-                alert('AJAX error while deleting appointment.');
+                toastr.error('AJAX error while deleting appointment.');
             }
         });
     }
