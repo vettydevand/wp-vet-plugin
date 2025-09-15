@@ -1,4 +1,45 @@
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', async function() {
+    // --- INIZIO SEZIONE THEME --- 
+
+    const root = document.documentElement;
+    const appNameEl = document.getElementById('appName');
+    const appLogoEl = document.getElementById('appLogo');
+
+    /**
+     * Carica il file theme.json e applica la personalizzazione.
+     */
+    async function applyTheme() {
+        try {
+            const response = await fetch('theme.json');
+            if (!response.ok) {
+                throw new Error(`Impossibile caricare theme.json: ${response.statusText}`);
+            }
+            const theme = await response.json();
+
+            // Applica nome e logo
+            document.title = theme.appName;
+            appNameEl.textContent = theme.appName;
+            if (theme.logoUrl) {
+                appLogoEl.src = theme.logoUrl;
+                appLogoEl.style.display = 'inline';
+            }
+
+            // Applica colori e font come variabili CSS
+            for (const color in theme.theme.colors) {
+                root.style.setProperty(`--${color}-color`, theme.theme.colors[color]);
+            }
+            root.style.setProperty('--font-main', theme.theme.fonts.main);
+
+        } catch (error) {
+            console.warn('Tema non applicato:', error.message);
+            // Se theme.json non è presente o è malformato, l'app usa i valori di fallback in styles.css
+        }
+    }
+
+    await applyTheme();
+
+    // --- FINE SEZIONE THEME ---
+
     // Elementi del DOM
     const calendarEl = document.getElementById('calendar');
     const modal = document.getElementById('appointmentModal');
@@ -12,7 +53,6 @@ document.addEventListener('DOMContentLoaded', function() {
     const saveButton = document.getElementById('saveButton');
     const deleteButton = document.getElementById('deleteButton');
 
-    // Funzione wrapper per le chiamate API
     async function apiCall(url, method, data) {
         try {
             const response = await fetch(url, {
@@ -20,9 +60,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 headers: { 'Content-Type': 'application/json' },
                 body: data ? JSON.stringify(data) : undefined,
             });
-
             const result = await response.json();
-
             if (!response.ok) {
                 throw new Error(result.message || `Errore HTTP: ${response.status}`);
             }
@@ -30,11 +68,10 @@ document.addEventListener('DOMContentLoaded', function() {
         } catch (error) {
             console.error('Errore API:', error);
             alert(`Operazione fallita: ${error.message}`);
-            throw error; // Rilancia l'errore per essere gestito dal chiamante
+            throw error;
         }
     }
 
-    // Converte una data in formato ISO per l'input datetime-local
     function toLocalISOString(date) {
         const pad = (num) => num.toString().padStart(2, '0');
         const year = date.getFullYear();
@@ -45,7 +82,6 @@ document.addEventListener('DOMContentLoaded', function() {
         return `${year}-${month}-${day}T${hours}:${minutes}`;
     }
 
-    // Inizializzazione di FullCalendar
     const calendar = new FullCalendar.Calendar(calendarEl, {
         plugins: ['interaction', 'dayGrid', 'timeGrid'],
         header: {
@@ -53,7 +89,7 @@ document.addEventListener('DOMContentLoaded', function() {
             center: 'title',
             right: 'dayGridMonth,timeGridWeek,timeGridDay'
         },
-        locale: 'it', // Imposta la lingua italiana
+        locale: 'it',
         buttonText: { today: 'oggi', month: 'mese', week: 'settimana', day: 'giorno' },
         events: (fetchInfo, successCallback, failureCallback) => {
             apiCall('api.php', 'GET')
@@ -61,17 +97,10 @@ document.addEventListener('DOMContentLoaded', function() {
                 .catch(err => failureCallback(err));
         },
         selectable: true,
-        editable: true, // Abilita il drag-and-drop e il resize
-
-        // Apre il modale per creare un nuovo evento
+        editable: true,
         select: function(info) {
-            openModal({
-                start: info.start,
-                end: info.end
-            });
+            openModal({ start: info.start, end: info.end });
         },
-
-        // Apre il modale per modificare un evento esistente
         eventClick: function(info) {
             openModal({
                 id: info.event.id,
@@ -80,21 +109,17 @@ document.addEventListener('DOMContentLoaded', function() {
                 end: info.event.end
             });
         },
-
-        // Gestisce l'aggiornamento di un evento (drag o resize)
         eventDrop: handleEventUpdate,
         eventResize: handleEventUpdate,
     });
 
     calendar.render();
 
-    // Funzioni di gestione del modale
     function openModal(data = {}) {
         appointmentId.value = data.id || '';
         appointmentTitle.value = data.title || '';
         appointmentStart.value = toLocalISOString(data.start ? new Date(data.start) : new Date());
-        appointmentEnd.value = toLocalISOString(data.end ? new Date(data.end) : new Date(new Date().getTime() + 60*60*1000)); // Default a 1 ora dopo
-
+        appointmentEnd.value = toLocalISOString(data.end ? new Date(data.end) : new Date(new Date().getTime() + 60*60*1000));
         modalTitle.innerText = data.id ? 'Modifica Appuntamento' : 'Aggiungi Appuntamento';
         deleteButton.style.display = data.id ? 'inline-block' : 'none';
         modal.style.display = 'block';
@@ -105,41 +130,32 @@ document.addEventListener('DOMContentLoaded', function() {
         appointmentForm.reset();
     }
 
-    // Gestione degli eventi del modale
     closeModalBtn.addEventListener('click', closeModal);
     window.addEventListener('click', (event) => {
         if (event.target === modal) closeModal();
     });
 
-    // Gestione del salvataggio (creazione/aggiornamento)
     appointmentForm.addEventListener('submit', async (e) => {
         e.preventDefault();
-        
         const eventData = {
             id: appointmentId.value || null,
             title: appointmentTitle.value.trim(),
             start: new Date(appointmentStart.value).toISOString(),
             end: new Date(appointmentEnd.value).toISOString(),
         };
-
         if (!eventData.title) {
             alert('Il titolo è obbligatorio.');
             return;
         }
-
         const method = eventData.id ? 'PUT' : 'POST';
-
         try {
             await apiCall('api.php', method, eventData);
             closeModal();
             calendar.refetchEvents();
             alert(`Appuntamento ${eventData.id ? 'aggiornato' : 'creato'} con successo!`);
-        } catch (err) {
-            // L'errore è già gestito in apiCall, ma si potrebbe aggiungere logica qui
-        }
+        } catch (err) {}
     });
 
-    // Gestione dell'eliminazione
     deleteButton.addEventListener('click', async () => {
         const id = appointmentId.value;
         if (id && confirm('Sei sicuro di voler eliminare questo appuntamento?')) {
@@ -148,13 +164,10 @@ document.addEventListener('DOMContentLoaded', function() {
                 closeModal();
                 calendar.refetchEvents();
                 alert('Appuntamento eliminato con successo!');
-            } catch (err) {
-                // L'errore è già gestito in apiCall
-            }
+            } catch (err) {}
         }
     });
 
-    // Funzione per aggiornare l'evento dopo drag o resize
     async function handleEventUpdate(info) {
         const eventData = {
             id: info.event.id,
@@ -162,12 +175,10 @@ document.addEventListener('DOMContentLoaded', function() {
             start: info.event.start.toISOString(),
             end: info.event.end ? info.event.end.toISOString() : new Date(info.event.start.getTime() + 60*60*1000).toISOString(),
         };
-
         if (!confirm("Confermi la modifica di questo appuntamento?")) {
-            info.revert(); // Annulla la modifica se l'utente non conferma
+            info.revert();
             return;
         }
-
         try {
             await apiCall('api.php', 'PUT', eventData);
             calendar.refetchEvents();

@@ -2,44 +2,55 @@
 <html lang="it">
 <head>
     <meta charset="UTF-8">
-    <title>Calendario Appuntamenti</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calendario Appuntamenti</title> <!-- Il titolo verrà aggiornato da JS -->
     <link href='https://unpkg.com/@fullcalendar/core@4.4.2/main.min.css' rel='stylesheet' />
     <link href='https://unpkg.com/@fullcalendar/daygrid@4.4.2/main.min.css' rel='stylesheet' />
     <link href='https://unpkg.com/@fullcalendar/timegrid@4.4.2/main.min.css' rel='stylesheet' />
-    <link href="styles.css" rel="stylesheet" />
-    <script src='https://unpkg.com/@fullcalendar/core@4.4.2/main.min.js'></script>
-    <script src='https://unpkg.com/@fullcalendar/interaction@4.4.2/main.min.js'></script>
-    <script src='https://unpkg.com/@fullcalendar/daygrid@4.4.2/main.min.js'></script>
-    <script src='https://unpkg.com/@fullcalendar/timegrid@4.4.2/main.min.js'></script>
-    <script src="scripts.js" defer></script>
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <h1>Calendario Appuntamenti</h1>
-    <div id='calendar'></div>
 
-    <!-- Modale per Appuntamenti -->
+    <header class="app-header">
+        <img id="appLogo" src="" alt="Logo" class="app-logo" style="display: none;" />
+        <h1 id="appName">Calendario Appuntamenti</h1>
+    </header>
+
+    <div id="calendar"></div>
+
+    <!-- Modale per Aggiungere/Modificare Appuntamento -->
     <div id="appointmentModal" class="modal">
         <div class="modal-content">
             <span class="close-button">&times;</span>
-            <h2 id="modalTitle">Aggiungi/Modifica Appuntamento</h2>
+            <h2 id="modalTitle">Aggiungi Appuntamento</h2>
             <form id="appointmentForm">
                 <input type="hidden" id="appointmentId">
-                
-                <label for="appointmentTitle">Titolo:</label>
-                <input type="text" id="appointmentTitle" required>
-                
-                <label for="appointmentStart">Inizio:</label>
-                <input type="datetime-local" id="appointmentStart" required>
-                
-                <label for="appointmentEnd">Fine:</label>
-                <input type="datetime-local" id="appointmentEnd" required>
-                
+                <div>
+                    <label for="appointmentTitle">Titolo:</label>
+                    <input type="text" id="appointmentTitle" required>
+                </div>
+                <div>
+                    <label for="appointmentStart">Inizio:</label>
+                    <input type="datetime-local" id="appointmentStart" required>
+                </div>
+                <div>
+                    <label for="appointmentEnd">Fine:</label>
+                    <input type="datetime-local" id="appointmentEnd" required>
+                </div>
                 <div class="modal-buttons">
                     <button type="submit" id="saveButton">Salva</button>
-                    <button type="button" id="deleteButton" style="display: none;">Elimina</button>
+                    <button type="button" id="deleteButton" style="display:none;">Elimina</button>
                 </div>
             </form>
         </div>
     </div>
+
+    <script src='https://unpkg.com/@fullcalendar/core@4.4.2/main.min.js'></script>
+    <script src='https://unpkg.com/@fullcalendar/interaction@4.4.2/main.min.js'></script>
+    <script src='https://unpkg.com/@fullcalendar/daygrid@4.4.2/main.min.js'></script>
+    <script src='https://unpkg.com/@fullcalendar/timegrid@4.4.2/main.min.js'></script>
+    <script src='https://unpkg.com/@fullcalendar/core/locales/it.js'></script>
+    <script src="scripts.js"></script>
+
 </body>
 </html>
