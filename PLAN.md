@@ -24,7 +24,7 @@
 *   [x] **3.2. Documentazione e Refactoring Area Admin:** Revisionata e documentata la classe `WPVetPlugin_Admin` e la sua vista parziale, correggendo la logica della Settings API.
 *   [x] **3.3. Documentazione e Refactoring Area Public:** Revisionata e documentata la classe `WPVetPlugin_Public` e la sua vista, aggiungendo il modale mancante e l'internazionalizzazione delle stringhe.
 *   [x] **3.4. Refactoring Completo Gestore AJAX:** Riscritta la classe `WPVetPlugin_Ajax` per includere la lettura dei dati, gestire correttamente i campi del modale, usare nonce corretti e migliorare le notifiche.
-*   [x] **3.5. Riscittura Completa JavaScript Pubblico:** Riscritto il file JS per allinearlo alla nuova logica, gestire il modale, usare i dati corretti e le stringhe localizzate.
+*   [x] **3.so 5. Riscritto il file JS per allinearlo alla nuova logica, gestire il modale, usare i dati corretti e le stringhe localizzate.**
 
 ---
 
@@ -57,8 +57,8 @@
 
 **Obiettivo:** Separare il codice del plugin dalla dipendenza FullCalendar, adottando un approccio moderno basato su `npm` per la gestione dei pacchetti e un processo di build per gli assets.
 
-*   [ ] **6.1. Creazione branch di lavoro:** Creare un branch `refactor/dependency-management` per isolare il lavoro.
-*   [ ] **6.2. Isolamento codice sorgente:** Spostare i file specifici del plugin in una cartella `src` pulita.
+*   [x] **6.1. Creazione branch di lavoro:** Creato il branch `refactor/dependency-management`.
+*   [x] **6.2. Isolamento codice sorgente:** Spostati i file specifici del plugin in una cartella `src` pulita.
 *   [ ] **6.3. Creazione `package.json` dedicato:** Inizializzare un nuovo file `package.json` nella root del progetto per gestire le dipendenze di build.
 *   [ ] **6.4. Installazione dipendenze via `npm`:** Installare `fullcalendar`, i suoi plugin e le dipendenze di sviluppo (webpack, ecc.).
 *   [ ] **6.5. Configurazione processo di build:** Creare un file `webpack.config.js` per definire come compilare e raggruppare i file JavaScript e CSS in bundle ottimizzati.
