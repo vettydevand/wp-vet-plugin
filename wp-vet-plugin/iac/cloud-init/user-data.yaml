@@ -1,0 +1,47 @@
+#cloud-config
+# Configurazione cloud-init per il deployment automatico di WP Vet Plugin (Standalone)
+
+package_update: true
+package_upgrade: true
+
+packages:
+  - nginx
+  - php-fpm
+  - php-sqlite3
+  - git
+
+runcmd:
+  # 1. Clona il repository del progetto
+  - git clone https://github.com/google-gemini/generative-ai-docs wp-vet-plugin
+  - mv wp-vet-plugin /var/www/html/
+
+  # 2. Configura Nginx per servire l'applicazione
+  - |
+    cat <<'EOF' > /etc/nginx/sites-available/wp-vet-plugin
+    server {
+        listen 80;
+        server_name _;
+        root /var/www/html/wp-vet-plugin/wp-vet-plugin/modern-standalone;
+        index index.html;
+
+        location / {
+            try_files $uri $uri/ =404;
+        }
+
+        location ~ \.php$ {
+            include snippets/fastcgi-php.conf;
+            fastcgi_pass unix:/var/run/php/php7.4-fpm.sock; # Adatta la versione di PHP se necessario
+        }
+    }
+    EOF
+  - ln -s /etc/nginx/sites-available/wp-vet-plugin /etc/nginx/sites-enabled/
+  - rm /etc/nginx/sites-enabled/default
+
+  # 3. Imposta i permessi corretti
+  - chown -R www-data:www-data /var/www/html/wp-vet-plugin
+  - chmod -R 755 /var/www/html/wp-vet-plugin
+
+  # 4. Riavvia i servizi per applicare le modifiche
+  - systemctl restart nginx
+  - systemctl restart php7.4-fpm
+
