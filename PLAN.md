@@ -83,4 +83,4 @@ Questa è la pianificazione per automatizzare la creazione del pacchetto di dist
 - [x] Installare la dipendenza di sviluppo `bestzip`.
 - [x] Creare uno script `package` nel file `package.json`.
 - [x] Configurare lo script per creare un file `wp-vet-plugin.zip` contenente solo i file di produzione.
-- [ ] Documentare la procedura di packaging nel `README.md`.
+- [x] Documentare la procedura di packaging nel `README.md`.

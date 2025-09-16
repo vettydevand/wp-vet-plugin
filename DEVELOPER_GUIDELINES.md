@@ -13,3 +13,5 @@ Questo file serve come un insieme di regole e best practice da seguire durante i
 5.  **In caso di Fallimento, Spiega e Correggi:** Se un'API o un comando fallisce, non ignorarlo. Spiega perché è fallito e qual è il piano alternativo per raggiungere l'obiettivo.
 
 6.  **Verifica i Comandi:** Prima di eseguire un comando, specialmente uno con conseguenze importanti (es. `rm`, `git restore`), rileggi attentamente per assicurarti che sia corretto e completo.
+
+7.  **Usa gli Strumenti Definiti:** Utilizza gli script e gli strumenti definiti nel `package.json` (es. `npm run build`, `npm run package`) per le attività comuni. Questo garantisce che tutti gli sviluppatori seguano lo stesso processo e che gli output siano consistenti.

@@ -16,7 +16,7 @@ This plugin provides a shortcode `[wp_vet_calendar]` to display a calendar on an
 
 ## Installation
 
-1.  Download the latest release from the [releases page](https://github.com/gemini/wp-vet-plugin/releases).
+1.  Download the latest release `wp-vet-plugin.zip` from the [releases page](https://github.com/gemini/wp-vet-plugin/releases).
 2.  Upload the ZIP file to your WordPress site via the "Plugins > Add New > Upload Plugin" page.
 3.  Activate the plugin.
 4.  Go to "Settings > WP Vet Plugin" to configure the Telegram notifications (optional).
@@ -24,25 +24,35 @@ This plugin provides a shortcode `[wp_vet_calendar]` to display a calendar on an
 
 ## Development
 
-This project uses `pnpm` for package management and `webpack` to bundle JavaScript and CSS assets.
+This project uses `npm` for package management and `webpack` to bundle JavaScript and CSS assets.
 
 ### Prerequisites
 
 *   [Node.js](https://nodejs.org/) (v14 or later)
-*   [pnpm](https://pnpm.io/)
+*   [npm](https://www.npmjs.com/)
 
 ### Build Steps
 
 1.  **Install dependencies:**
 
     ```bash
-    pnpm install
+    npm install
     ```
 
 2.  **Run the build process:**
 
     ```bash
-    pnpm run build
+    npm run build
     ```
 
     This will compile the assets and place the final `bundle.js` file in the `dist/` directory.
+
+### Packaging for Distribution
+
+To create a distributable ZIP file of the plugin, run the following command:
+
+```bash
+npm run package
+```
+
+This will create a `wp-vet-plugin.zip` file in the root of the project, which can be uploaded to a WordPress site.
