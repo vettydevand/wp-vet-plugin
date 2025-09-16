@@ -6,6 +6,7 @@
   "scripts": {
     "build": "webpack",
     "dev": "webpack --watch",
+    "package": "npm run build && bestzip wp-vet-plugin.zip dist/ src/ README.md",
     "test": "echo \"Error: no test specified\" && exit 0"
   },
   "keywords": [
@@ -27,6 +28,7 @@
     "@babel/core": "^7.28.4",
     "@babel/preset-env": "^7.28.3",
     "babel-loader": "^10.0.0",
+    "bestzip": "^2.2.1",
     "css-loader": "^7.1.2",
     "style-loader": "^4.0.0",
     "webpack": "^5.101.3",

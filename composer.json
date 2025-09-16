@@ -1,0 +1,12 @@
+{
+  "name": "vettydev/wp-vet-plugin",
+  "description": "A WordPress plugin that provides a veterinary appointment calendar.",
+  "type": "wordpress-plugin",
+  "license": "GPL-2.0-or-later",
+  "authors": [
+    {
+      "name": "Vetty Dev"
+    }
+  ],
+  "require": {}
+}

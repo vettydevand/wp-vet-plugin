@@ -75,3 +75,12 @@ Questa è la pianificazione per l'integrazione e la configurazione di FullCalend
 - [x] Verificare il funzionamento del calendario nell'interfaccia di WordPress.
 - [x] Pulire le vecchie referenze ai file JS/CSS non più necessari.
 - [x] Documentare la procedura di build nel `README.md`.
+
+# Piano di Lavoro: Automazione del Packaging
+
+Questa è la pianificazione per automatizzare la creazione del pacchetto di distribuzione del plugin.
+
+- [x] Installare la dipendenza di sviluppo `bestzip`.
+- [x] Creare uno script `package` nel file `package.json`.
+- [x] Configurare lo script per creare un file `wp-vet-plugin.zip` contenente solo i file di produzione.
+- [ ] Documentare la procedura di packaging nel `README.md`.
