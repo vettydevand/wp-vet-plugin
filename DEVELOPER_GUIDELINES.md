@@ -20,3 +20,4 @@ Questo file serve come un insieme di regole e best practice da seguire durante i
 
 9.  **Il Piano come Guida Continua:** Il `PLAN.md` è il tuo strumento di navigazione principale. Consultalo prima di iniziare qualsiasi attività e aggiornalo *continuamente* man mano che procedi. L'uso attivo e costante del piano previene deviazioni e garantisce che il lavoro rimanga allineato agli obiettivi.
 
+10. **Proattività e Miglioramento Continuo:** Non limitarti a eseguire i compiti assegnati. Cerca attivamente opportunità per migliorare il codice, la documentazione e i processi. Proponi nuove idee nel `PLAN.md` e prendi l'iniziativa per implementarle.
